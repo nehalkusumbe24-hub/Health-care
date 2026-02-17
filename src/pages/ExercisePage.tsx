@@ -81,10 +81,12 @@ export default function ExercisePage() {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10">
-        <CardHeader>
+      <Card className="relative overflow-hidden glass-effect border-primary/20">
+        <div className="absolute inset-0 gradient-bg" />
+        <div className="absolute inset-0 pattern-dots opacity-20" />
+        <CardHeader className="relative z-10">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+            <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center shadow-lg">
               <Dumbbell className="h-6 w-6 text-primary" />
             </div>
             <div>
@@ -96,8 +98,8 @@ export default function ExercisePage() {
           </div>
         </CardHeader>
         {exercisePlan.duration_minutes && (
-          <CardContent>
-            <Badge variant="secondary">
+          <CardContent className="relative z-10">
+            <Badge variant="secondary" className="shadow-sm">
               {exercisePlan.duration_minutes} minutes daily
             </Badge>
           </CardContent>

@@ -60,10 +60,12 @@ export default function DietPage() {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10">
-        <CardHeader>
+      <Card className="relative overflow-hidden glass-effect border-primary/20">
+        <div className="absolute inset-0 gradient-bg" />
+        <div className="absolute inset-0 pattern-dots opacity-20" />
+        <CardHeader className="relative z-10">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+            <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center shadow-lg">
               <Leaf className="h-6 w-6 text-primary" />
             </div>
             <div>
@@ -75,10 +77,10 @@ export default function DietPage() {
           </div>
         </CardHeader>
         {dietPlan.primary_dosha && (
-          <CardContent>
+          <CardContent className="relative z-10">
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Optimized for:</span>
-              <Badge variant="secondary" className="capitalize">
+              <Badge variant="secondary" className="capitalize shadow-sm">
                 {dietPlan.primary_dosha} Dosha
               </Badge>
             </div>
@@ -86,7 +88,7 @@ export default function DietPage() {
         )}
       </Card>
 
-      <Card>
+      <Card className="glass-effect border-primary/20">
         <CardHeader>
           <CardTitle>Daily Meal Plan</CardTitle>
         </CardHeader>
@@ -96,9 +98,9 @@ export default function DietPage() {
             if (!mealData) return null;
 
             return (
-              <div key={meal.key} className="border rounded-lg p-4">
+              <div key={meal.key} className="border rounded-lg p-4 glass-effect hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="h-10 w-10 rounded-lg gradient-bg flex items-center justify-center shadow-sm">
                     <meal.icon className="h-5 w-5 text-primary" />
                   </div>
                   <h3 className="text-lg font-semibold">{meal.label}</h3>

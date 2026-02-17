@@ -38,8 +38,10 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="min-h-screen relative">
+      <div className="absolute inset-0 pattern-dots opacity-40" />
+      
+      <header className="sticky top-0 z-50 w-full border-b glass-effect">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <Leaf className="h-6 w-6 text-primary" />
@@ -56,9 +58,13 @@ export default function LandingPage() {
         </div>
       </header>
 
-      <section className="py-20 px-4 bg-gradient-to-br from-background via-accent/20 to-background">
-        <div className="container max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+      <section className="relative py-20 px-4 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" />
+        
+        <div className="container max-w-6xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-effect border border-primary/20 text-primary text-sm font-medium mb-6">
             <Leaf className="h-4 w-4" />
             Ancient Wisdom, Modern Technology
           </div>
@@ -76,7 +82,7 @@ export default function LandingPage() {
               </Button>
             </Link>
             <Link to="/doctor-register">
-              <Button size="lg" variant="outline" className="text-lg px-8">
+              <Button size="lg" variant="outline" className="text-lg px-8 glass-effect">
                 Join as Doctor
               </Button>
             </Link>
@@ -84,7 +90,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 relative">
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Comprehensive Ayurvedic Care</h2>
@@ -95,16 +101,17 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-video overflow-hidden">
+              <Card key={index} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 glass-effect border-primary/10">
+                <div className="aspect-video overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent z-10" />
                   <img
                     src={feature.image}
                     alt={feature.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                   />
                 </div>
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                  <div className="h-12 w-12 rounded-lg gradient-bg flex items-center justify-center mb-4">
                     <feature.icon className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle>{feature.title}</CardTitle>
@@ -116,12 +123,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-20 px-4 bg-accent/30">
-        <div className="container max-w-4xl mx-auto text-center">
+      <section className="py-20 px-4 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-accent/30 to-transparent" />
+        <div className="container max-w-4xl mx-auto text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">How It Works</h2>
           <div className="grid md:grid-cols-3 gap-8 mt-12">
             <div className="space-y-4">
-              <div className="h-16 w-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-primary/60 text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto shadow-lg">
                 1
               </div>
               <h3 className="text-xl font-semibold">Complete Assessment</h3>
@@ -130,7 +138,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="space-y-4">
-              <div className="h-16 w-16 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-2xl font-bold mx-auto">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-secondary to-secondary/60 text-secondary-foreground flex items-center justify-center text-2xl font-bold mx-auto shadow-lg">
                 2
               </div>
               <h3 className="text-xl font-semibold">Get Personalized Plan</h3>
@@ -139,7 +147,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="space-y-4">
-              <div className="h-16 w-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-primary/60 text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto shadow-lg">
                 3
               </div>
               <h3 className="text-xl font-semibold">Consult Experts</h3>
@@ -151,22 +159,25 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-20 px-4">
-        <div className="container max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Health?</h2>
-          <p className="text-lg text-muted-foreground mb-8">
-            Join thousands of users discovering the power of Ayurvedic wellness
-          </p>
-          <Link to="/signup">
-            <Button size="lg" className="text-lg px-8">
-              Get Started Free
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
+      <section className="py-20 px-4 relative">
+        <div className="absolute inset-0 pattern-grid opacity-20" />
+        <div className="container max-w-4xl mx-auto text-center relative z-10">
+          <div className="glass-effect rounded-2xl p-12 border border-primary/20">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Health?</h2>
+            <p className="text-lg text-muted-foreground mb-8">
+              Join thousands of users discovering the power of Ayurvedic wellness
+            </p>
+            <Link to="/signup">
+              <Button size="lg" className="text-lg px-8 shadow-lg">
+                Get Started Free
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      <footer className="border-t py-8 px-4">
+      <footer className="border-t glass-effect py-8 px-4 relative z-10">
         <div className="container max-w-6xl mx-auto text-center text-muted-foreground">
           <p>© 2026 Ayurvedic Health Advisor. All rights reserved.</p>
         </div>
