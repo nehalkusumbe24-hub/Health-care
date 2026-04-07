@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { Leaf, Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Coffee } from 'lucide-react';
+import { Leaf, Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -30,100 +31,98 @@ export default function LoginPage() {
   };
 
   const inputStyle: React.CSSProperties = {
-    background: 'hsl(22 22% 9%)',
-    border: '1px solid hsl(32 20% 18%)',
-    color: 'hsl(38 25% 88%)',
+    background: 'hsl(145 20% 6% / 0.8)',
+    border: '1px solid hsl(145 15% 18%)',
+    color: 'hsl(120 15% 95%)',
   };
   const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.currentTarget.style.borderColor = 'hsl(32 60% 38%)';
-    e.currentTarget.style.boxShadow = '0 0 0 2px hsl(32 50% 28% / 0.25), 0 0 12px hsl(32 60% 30% / 0.15)';
+    e.currentTarget.style.borderColor = 'hsl(142 65% 55%)';
+    e.currentTarget.style.boxShadow = '0 0 0 2px hsl(142 65% 55% / 0.1)';
   };
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.currentTarget.style.borderColor = 'hsl(32 20% 18%)';
+    e.currentTarget.style.borderColor = 'hsl(145 15% 18%)';
     e.currentTarget.style.boxShadow = 'none';
   };
 
   return (
-    <div className="aurora-bg min-h-screen flex items-center justify-center p-4 overflow-hidden">
-      <div className="orb orb-1" style={{ opacity: 0.5 }} />
-      <div className="orb orb-2" style={{ opacity: 0.4 }} />
-      <div className="dot-grid" />
-      <div className="scanlines" />
-
-      <div className="content-layer w-full max-w-md">
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="h-16 w-16 rounded-2xl flex items-center justify-center mb-4 animate-glow-pulse"
-               style={{ background: 'hsl(32 40% 16%)', border: '1.5px solid hsl(32 50% 28% / 0.5)' }}>
-            <Leaf className="h-8 w-8" style={{ color: 'hsl(32 85% 58%)' }} />
-          </div>
-          <h1 className="text-2xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Ayur<span style={{ color: 'hsl(32 85% 58%)' }}>veda</span>
-          </h1>
-          <p className="text-xs uppercase tracking-widest mt-1" style={{ color: 'hsl(38 12% 48%)' }}>Health Advisor</p>
-        </div>
-
-        {/* Card */}
-        <div className="rounded-2xl p-8"
-             style={{ background: 'hsl(22 22% 9%)', border: '1px solid hsl(32 20% 15%)', boxShadow: '0 8px 48px hsl(20 40% 4% / 0.9), inset 0 1px 0 hsl(38 25% 20% / 0.06)' }}>
-          <h2 className="text-xl font-bold mb-1" style={{ fontFamily: 'Outfit, sans-serif', color: 'hsl(38 25% 88%)' }}>Welcome back</h2>
-          <p className="text-sm mb-6" style={{ color: 'hsl(38 12% 48%)' }}>Sign in to continue your wellness journey</p>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium" style={{ color: 'hsl(38 15% 68%)' }} htmlFor="email">Email address</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none" style={{ color: 'hsl(38 12% 42%)' }} />
-                <input id="email" type="email" placeholder="you@example.com"
-                       value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email"
-                       className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm outline-none transition-all duration-200"
-                       style={inputStyle} onFocus={onFocus} onBlur={onBlur} />
-              </div>
+    <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden relative">
+      <div className="content-layer w-full max-w-md z-10">
+        <motion.div
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.8 }}
+        >
+          {/* Logo */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="h-20 w-20 rounded-2xl flex items-center justify-center mb-4 glass-effect animate-lotus"
+                 style={{ border: '1.5px solid hsl(142 65% 55% / 0.3)' }}>
+              <Leaf className="h-10 w-10 text-primary" />
             </div>
+            <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              Vedic<span className="text-primary">Life</span>
+            </h1>
+            <p className="text-xs uppercase tracking-[0.3em] font-medium mt-1 text-muted-foreground">Digital Sanctuary</p>
+          </div>
 
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium" style={{ color: 'hsl(38 15% 68%)' }} htmlFor="password">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none" style={{ color: 'hsl(38 12% 42%)' }} />
-                <input id="password" type={showPassword ? 'text' : 'password'} placeholder="••••••••"
-                       value={password} onChange={e => setPassword(e.target.value)} required autoComplete="current-password"
-                       className="w-full pl-10 pr-10 py-2.5 rounded-xl text-sm outline-none transition-all duration-200"
-                       style={inputStyle} onFocus={onFocus} onBlur={onBlur} />
-                <button type="button" onClick={() => setShowPassword(v => !v)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
-                        style={{ color: 'hsl(38 12% 42%)' }}>
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          {/* Simple Login Card */}
+          <div className="rounded-3xl p-8 glass-effect relative border border-white/5">
+            <div className="relative z-20">
+              <h2 className="text-2xl font-bold mb-1" style={{ fontFamily: 'Outfit, sans-serif' }}>Welcome Back</h2>
+              <p className="text-sm mb-8 text-muted-foreground">Continue your journey to mindful wellness</p>
+
+              <form onSubmit={handleLogin} className="space-y-5">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground ml-1" htmlFor="email">Email</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <input id="email" type="email" placeholder="email@temple.com"
+                           value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email"
+                           className="w-full pl-11 pr-4 py-3 rounded-2xl text-sm outline-none transition-all duration-300"
+                           style={inputStyle} onFocus={onFocus} onBlur={onBlur} />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground ml-1" htmlFor="password">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <input id="password" type={showPassword ? 'text' : 'password'} placeholder="••••••••"
+                           value={password} onChange={e => setPassword(e.target.value)} required autoComplete="current-password"
+                           className="w-full pl-11 pr-11 py-3 rounded-2xl text-sm outline-none transition-all duration-300"
+                           style={inputStyle} onFocus={onFocus} onBlur={onBlur} />
+                    <button type="button" onClick={() => setShowPassword(v => !v)}
+                            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors">
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" disabled={loading}
+                        className="btn-vedic w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold shadow-xl disabled:opacity-50 mt-4 overflow-hidden relative group">
+                  <span className="relative z-10 flex items-center gap-2">
+                    {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Awakening...</> : <><ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /> Enter Sanctuary</>}
+                  </span>
                 </button>
+              </form>
+
+              <div className="flex items-center gap-4 my-8">
+                <div className="flex-1 h-px bg-border/40" />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold">Divine Path</span>
+                <div className="flex-1 h-px bg-border/40" />
+              </div>
+
+              <div className="space-y-3 text-center">
+                <p className="text-sm text-muted-foreground">
+                  New seeker?{' '}
+                  <Link to="/signup" className="text-primary font-bold hover:underline underline-offset-4 decoration-2">Begin Journey</Link>
+                </p>
+                <p className="text-xs text-muted-foreground/60 italic">
+                  "Healing is a matter of time, but it is sometimes also a matter of opportunity."
+                </p>
               </div>
             </div>
-
-            <button type="submit" disabled={loading}
-                    className="btn-amber w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50 hover-lift mt-2">
-              {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Signing in...</> : <><ArrowRight className="h-4 w-4" /> Sign In</>}
-            </button>
-          </form>
-
-          <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px" style={{ background: 'hsl(32 18% 14%)' }} />
-            <span className="text-xs" style={{ color: 'hsl(38 12% 40%)' }}>or</span>
-            <div className="flex-1 h-px" style={{ background: 'hsl(32 18% 14%)' }} />
           </div>
-
-          <div className="space-y-2 text-center text-sm">
-            <p style={{ color: 'hsl(38 12% 48%)' }}>
-              Don't have an account?{' '}
-              <Link to="/signup" className="font-medium transition-opacity hover:opacity-75" style={{ color: 'hsl(32 75% 55%)' }}>Create one</Link>
-            </p>
-            <p style={{ color: 'hsl(38 12% 48%)' }}>
-              Are you a doctor?{' '}
-              <Link to="/doctor-register" className="font-medium transition-opacity hover:opacity-75" style={{ color: 'hsl(38 65% 55%)' }}>Register here</Link>
-            </p>
-          </div>
-        </div>
-
-        <p className="text-center text-xs mt-6" style={{ color: 'hsl(38 10% 38%)' }}>
-          Your health data is encrypted and never shared.
-        </p>
+        </motion.div>
       </div>
     </div>
   );

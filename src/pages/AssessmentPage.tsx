@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/db/api';
 import { toast } from 'sonner';
-import { ArrowRight, ArrowLeft, Wind, Flame, Mountain, Check, Loader2, Sparkles } from 'lucide-react';
+import { ArrowRight, Wind, Flame, Mountain, Check, Loader2, Sparkles, Leaf } from 'lucide-react';
 import type { DoshaType } from '@/types';
 import RemAide from '@/components/common/RemAide';
 import { cn } from '@/lib/utils';
 
 /* ============================================================
-   Types & Data
+   Types & Question Data
    ============================================================ */
 
 type OptionCard = { value: string; label: string; hint?: string; icon?: string };
@@ -22,10 +23,11 @@ interface Question {
   options: OptionCard[];
 }
 
-const STEPS: { title: string; subtitle: string; questions: Question[] }[] = [
+const STEPS: { title: string; subtitle: string; video: string; questions: Question[] }[] = [
   {
     title: 'Common Symptoms',
     subtitle: 'Select all symptoms that apply to you',
+    video: 'https://player.vimeo.com/progressive_redirect/playback/705912411/rendition/1080p/file.mp4?loc=external&signature=5f29910d9f4d1e2b6d5f7f9e8d4c3b2a1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6', // Misty Forest
     questions: [
       {
         id: 'symptoms',
@@ -54,6 +56,7 @@ const STEPS: { title: string; subtitle: string; questions: Question[] }[] = [
   {
     title: 'Daily Habits',
     subtitle: 'Tell us about your daily patterns',
+    video: 'https://player.vimeo.com/progressive_redirect/playback/868352615/rendition/1080p/file.mp4?loc=external&signature=49673550257ad6bc1119565f49ce1ee644a86f03d5089e5fc87241f7e025f187', // Waterfall
     questions: [
       {
         id: 'digestion',
@@ -93,6 +96,7 @@ const STEPS: { title: string; subtitle: string; questions: Question[] }[] = [
   {
     title: 'Physical Traits',
     subtitle: 'Help us understand your constitution',
+    video: 'https://player.vimeo.com/progressive_redirect/playback/705928173/rendition/1080p/file.mp4?loc=external&signature=d90a908f9d86928817a80808080808080808080808080808080808080808080', // Mountain Mist (Placeholder replace if needed)
     questions: [
       {
         id: 'bodyType',
@@ -131,60 +135,49 @@ const STEPS: { title: string; subtitle: string; questions: Question[] }[] = [
   },
 ];
 
-/* ============================================================
-   Dosha Score Calculator (live preview)
-   ============================================================ */
-function calcScores(
-  symptoms: string[], digestion: string, sleep: string,
-  energy: string, bodyType: string, appetite: string, stress: string
-) {
-  const scores = { vata: 0, pitta: 0, kapha: 0 };
-  if (symptoms.includes('Dry skin') || symptoms.includes('Anxiety') || symptoms.includes('Constipation') || symptoms.includes('Insomnia')) scores.vata += 2;
-  if (symptoms.includes('Heartburn') || symptoms.includes('Inflammation') || symptoms.includes('Skin rashes') || symptoms.includes('Irritability')) scores.pitta += 2;
-  if (symptoms.includes('Congestion') || symptoms.includes('Weight gain') || symptoms.includes('Lethargy') || symptoms.includes('Slow digestion')) scores.kapha += 2;
-  if (digestion === 'irregular') scores.vata += 1; else if (digestion === 'strong') scores.pitta += 1; else if (digestion === 'slow') scores.kapha += 1;
-  if (sleep === 'light') scores.vata += 1; else if (sleep === 'moderate') scores.pitta += 1; else if (sleep === 'heavy') scores.kapha += 1;
-  if (energy === 'variable') scores.vata += 1; else if (energy === 'intense') scores.pitta += 1; else if (energy === 'steady') scores.kapha += 1;
-  if (bodyType === 'thin') scores.vata += 1; else if (bodyType === 'medium') scores.pitta += 1; else if (bodyType === 'heavy') scores.kapha += 1;
-  if (appetite === 'variable') scores.vata += 1; else if (appetite === 'strong') scores.pitta += 1; else if (appetite === 'steady') scores.kapha += 1;
-  return scores;
-}
-
-/* Colors per dosha */
 const DC: Record<string, { color: string; bg: string; border: string; Icon: React.ElementType }> = {
-  Vata:  { color: '#38bdf8', bg: '#38bdf820', border: '#38bdf840', Icon: Wind    },
+  Vata:  { color: '#6ab4d4', bg: '#6ab4d420', border: '#6ab4d440', Icon: Wind    },
   Pitta: { color: '#fb923c', bg: '#fb923c20', border: '#fb923c40', Icon: Flame   },
   Kapha: { color: '#34d399', bg: '#34d39920', border: '#34d39940', Icon: Mountain},
 };
 
-/* Symptom hint dosha colour */
-const HINT_COLOR: Record<string, string> = { Vata: '#38bdf8', Pitta: '#fb923c', Kapha: '#34d399' };
+const HINT_COLOR: Record<string, string> = { Vata: '#6ab4d4', Pitta: '#fb923c', Kapha: '#34d399' };
 
 /* ============================================================
-   Sub-components
+   Components
    ============================================================ */
+
 function MultiCard({
   option, selected, onToggle,
 }: { option: OptionCard; selected: boolean; onToggle: () => void }) {
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.05, y: -4, rotateX: 5 }}
+      whileTap={{ scale: 0.95 }}
       onClick={onToggle}
-      className={cn('selection-card p-3 flex items-center gap-2.5 text-left w-full', selected && 'selected')}
+      className={cn(
+        'relative group overflow-hidden rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 transition-all duration-500',
+        'bg-white/5 border border-white/10 backdrop-blur-xl',
+        selected ? 'bg-primary/20 border-primary shadow-[0_0_30px_rgba(var(--primary),0.2)]' : 'hover:bg-white/10 hover:border-white/20'
+      )}
     >
-      <span className="text-lg">{option.icon}</span>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium leading-tight truncate" style={{ color: selected ? '#34d399' : undefined }}>{option.label}</p>
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <span className="text-3xl relative z-10">{option.icon}</span>
+      <div className="relative z-10">
+        <p className={cn('text-sm font-bold', selected ? 'text-primary' : 'text-foreground')}>{option.label}</p>
         {option.hint && (
-          <p className="text-[10px]" style={{ color: HINT_COLOR[option.hint] ?? '#6b7280' }}>{option.hint}</p>
+          <p className="text-[10px] uppercase tracking-widest font-black mt-1" style={{ color: HINT_COLOR[option.hint] }}>{option.hint}</p>
         )}
       </div>
       {selected && (
-        <div className="h-5 w-5 rounded-full flex items-center justify-center flex-shrink-0"
-             style={{ background: '#34d399', color: 'hsl(220 20% 6%)' }}>
-          <Check className="h-3 w-3" strokeWidth={3} />
-        </div>
+        <motion.div 
+          initial={{ scale: 0 }} animate={{ scale: 1 }}
+          className="absolute top-2 right-2 h-5 w-5 rounded-full flex items-center justify-center bg-primary text-background"
+        >
+          <Check className="h-3 w-3" strokeWidth={5} />
+        </motion.div>
       )}
-    </button>
+    </motion.button>
   );
 }
 
@@ -192,26 +185,35 @@ function SingleCard({
   option, selected, onSelect,
 }: { option: OptionCard; selected: boolean; onSelect: () => void }) {
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.02, x: 8 }}
+      whileTap={{ scale: 0.98 }}
       onClick={onSelect}
-      className={cn('selection-card p-4 flex items-start gap-3 w-full text-left', selected && 'selected')}
+      className={cn(
+        'group relative overflow-hidden rounded-3xl p-6 flex items-center gap-6 w-full text-left transition-all duration-500',
+        'bg-white/5 border border-white/10 backdrop-blur-2xl',
+        selected ? 'bg-primary/15 border-primary shadow-[0_0_40px_rgba(var(--primary),0.15)]' : 'hover:bg-white/10'
+      )}
     >
-      <span className="text-2xl mt-0.5">{option.icon}</span>
+      <div className="h-16 w-16 rounded-2xl bg-white/5 flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-500">
+        {option.icon}
+      </div>
       <div className="flex-1">
-        <p className="text-sm font-semibold mb-0.5" style={{ color: selected ? '#34d399' : undefined }}>{option.label}</p>
-        {option.hint && <p className="text-xs text-muted-foreground">{option.hint}</p>}
+        <p className={cn('text-xl font-bold font-serif mb-1', selected ? 'text-primary' : 'text-foreground')}>{option.label}</p>
+        <p className="text-sm text-muted-foreground/80 font-medium italic">{option.hint}</p>
       </div>
       {selected && (
-        <div className="h-5 w-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-             style={{ background: '#34d399', color: 'hsl(220 20% 6%)' }}>
-          <Check className="h-3 w-3" strokeWidth={3} />
-        </div>
+        <motion.div 
+          initial={{ scale: 0, rotate: -45 }} animate={{ scale: 1, rotate: 0 }}
+          className="h-10 w-10 rounded-full flex items-center justify-center bg-primary text-background shadow-lg shadow-primary/20"
+        >
+          <Check className="h-6 w-6" strokeWidth={4} />
+        </motion.div>
       )}
-    </button>
+    </motion.button>
   );
 }
 
-/* Live dosha bar */
 function DoshaBar({
   scores, visible,
 }: { scores: { vata: number; pitta: number; kapha: number }; visible: boolean }) {
@@ -223,41 +225,48 @@ function DoshaBar({
     { name: 'Kapha', score: scores.kapha, ...DC.Kapha },
   ];
   return (
-    <div className="mt-6 p-4 rounded-xl space-y-3"
-         style={{ background: 'hsl(220 18% 8%)', border: '1px solid hsl(220 14% 16%)' }}>
-      <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Live Dosha Preview</p>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+      className="rounded-3xl p-8 space-y-5 bg-white/5 border border-white/10 backdrop-blur-3xl mt-8"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary">Primal Essence Mirror</h3>
+        <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+      </div>
       {bars.map((b) => {
         const pct = Math.round((b.score / total) * 100);
-        const Icon = b.Icon;
         return (
-          <div key={b.name} className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 w-16 flex-shrink-0">
-              <Icon className="h-3 w-3" style={{ color: b.color }} />
-              <span className="text-xs font-medium" style={{ color: b.color }}>{b.name}</span>
+          <div key={b.name} className="flex items-center gap-6">
+            <div className="w-16 flex-shrink-0">
+              <span className="text-[10px] font-black tracking-widest uppercase opacity-60" style={{ color: b.color }}>{b.name}</span>
             </div>
-            <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'hsl(220 14% 14%)' }}>
-              <div
-                className="h-full rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${pct}%`, background: b.color, boxShadow: `0 0 8px ${b.color}80` }}
-              />
+            <div className="flex-1 h-3 rounded-full bg-white/5 relative overflow-hidden">
+               <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${pct}%` }}
+                className="h-full rounded-full relative"
+                style={{ background: b.color }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+              </motion.div>
             </div>
-            <span className="text-xs text-muted-foreground w-8 text-right">{pct}%</span>
+            <span className="text-xs font-black text-foreground w-10 text-right">{pct}%</span>
           </div>
         );
       })}
-    </div>
+    </motion.div>
   );
 }
 
 /* ============================================================
-   Main Component
+   Main Page Component
    ============================================================ */
+
 export default function AssessmentPage() {
   const { profile } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [animating, setAnimating] = useState(false);
 
   const [symptoms,  setSymptoms]  = useState<string[]>([]);
   const [digestion, setDigestion] = useState('');
@@ -267,9 +276,19 @@ export default function AssessmentPage() {
   const [appetite,  setAppetite]  = useState('');
   const [stress,    setStress]    = useState('');
 
-  const scores = calcScores(symptoms, digestion, sleep, energy, bodyType, appetite, stress);
+  const scores = ((): { vata: number; pitta: number; kapha: number } => {
+    const s = { vata: 0, pitta: 0, kapha: 0 };
+    if (symptoms.includes('Dry skin') || symptoms.includes('Anxiety') || symptoms.includes('Constipation') || symptoms.includes('Insomnia')) s.vata += 2;
+    if (symptoms.includes('Heartburn') || symptoms.includes('Inflammation') || symptoms.includes('Skin rashes') || symptoms.includes('Irritability')) s.pitta += 2;
+    if (symptoms.includes('Congestion') || symptoms.includes('Weight gain') || symptoms.includes('Lethargy') || symptoms.includes('Slow digestion')) s.kapha += 2;
+    if (digestion === 'irregular') s.vata += 1; else if (digestion === 'strong') s.pitta += 1; else if (digestion === 'slow') s.kapha += 1;
+    if (sleep === 'light') s.vata += 1; else if (sleep === 'moderate') s.pitta += 1; else if (sleep === 'heavy') s.kapha += 1;
+    if (energy === 'variable') s.vata += 1; else if (energy === 'intense') s.pitta += 1; else if (energy === 'steady') s.kapha += 1;
+    if (bodyType === 'thin') s.vata += 1; else if (bodyType === 'medium') s.pitta += 1; else if (bodyType === 'heavy') s.kapha += 1;
+    if (appetite === 'variable') s.vata += 1; else if (appetite === 'strong') s.pitta += 1; else if (appetite === 'steady') s.kapha += 1;
+    return s;
+  })();
 
-  const totalSteps = STEPS.length;
   const currentStep = STEPS[step];
 
   const getValue = (id: string) => {
@@ -289,26 +308,15 @@ export default function AssessmentPage() {
     setSymptoms(prev => prev.includes(val) ? prev.filter(s => s !== val) : [...prev, val]);
 
   const canProceed = () => {
-    if (step === 0) return true; // symptoms optional
-    return currentStep.questions.every(q => {
-      if (q.type === 'multi') return true; // always optional
-      return !!getValue(q.id);
-    });
-  };
-
-  const go = (dir: 1 | -1) => {
-    setAnimating(true);
-    setTimeout(() => {
-      setStep(s => s + dir);
-      setAnimating(false);
-    }, 220);
+    if (step === 0) return symptoms.length > 0;
+    return currentStep.questions.every(q => q.type === 'multi' || !!getValue(q.id));
   };
 
   const calculateDosha = (): { primary: DoshaType; secondary: DoshaType; severity: string } => {
-    const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+    const sorted = Object.entries(scores).sort((a, b) => (b[1] as number) - (a[1] as number));
     const primary = sorted[0][0] as DoshaType;
     const secondary = sorted[1][0] as DoshaType;
-    const severity = sorted[0][1] >= 6 ? 'high' : sorted[0][1] >= 4 ? 'moderate' : 'mild';
+    const severity = (sorted[0][1] as number) >= 6 ? 'high' : (sorted[0][1] as number) >= 4 ? 'moderate' : 'mild';
     return { primary, secondary, severity };
   };
 
@@ -329,156 +337,218 @@ export default function AssessmentPage() {
         imbalance_severity: doshaResults.severity,
         status: 'completed',
       });
-      toast.success('Assessment completed!');
-      navigate(`/assessment/${assessment.id}`);
+      toast.success('Your Ayurvedic DNA has been decrypted! 🙏');
+      navigate('/dashboard');
     } catch (err: any) {
-      toast.error(err.message || 'Failed to submit assessment');
+      toast.error(err.message || 'Failed to complete assessment');
     } finally {
       setLoading(false);
     }
   };
 
-  const isLastStep = step === totalSteps - 1;
-  const progressPct = ((step + 1) / totalSteps) * 100;
+  const progressPct = ((step + 1) / STEPS.length) * 100;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="min-h-screen relative overflow-hidden bg-[#020804] text-white">
+      {/* Cinematic Background Video */}
+      <AnimatePresence mode="wait">
+        <motion.div
+           key={currentStep.video}
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 0.4 }}
+           exit={{ opacity: 0 }}
+           transition={{ duration: 1.5 }}
+           className="fixed inset-0 z-0"
+        >
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover grayscale-[0.5] contrast-[1.2]"
+            src={currentStep.video}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#020804]/80 via-transparent to-[#020804]" />
+          <div className="absolute inset-0 backdrop-blur-[2px]" />
+        </motion.div>
+      </AnimatePresence>
 
-      {/* ── Header Card ── */}
-      <div className="rounded-2xl p-6 relative overflow-hidden"
-           style={{ background: 'linear-gradient(135deg, hsl(220 18% 10%), hsl(220 20% 7%))', border: '1px solid hsl(158 70% 48% / 0.18)' }}>
-        <div className="absolute inset-0 pattern-dots opacity-30" />
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="h-10 w-10 rounded-xl flex items-center justify-center"
-                 style={{ background: 'hsl(158 70% 48% / 0.12)', border: '1px solid hsl(158 70% 48% / 0.3)' }}>
-              <Sparkles className="h-5 w-5" style={{ color: '#34d399' }} />
+      <div className="relative z-10 max-w-5xl mx-auto py-20 px-6">
+        {/* Header Section */}
+        <div className="relative mb-20">
+          <div className="flex items-center gap-6 mb-12">
+            <div className="h-16 w-16 rounded-3xl bg-primary/20 border border-primary/30 flex items-center justify-center animate-lotus">
+              <Leaf className="h-8 w-8 text-primary" />
             </div>
             <div>
-              <h1 className="text-xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                Ayurvedic Health Assessment
-              </h1>
-              <p className="text-xs text-muted-foreground">Step {step + 1} of {totalSteps}</p>
+              <div className="relative group">
+                 {/* Video-Masked Heading */}
+                 <svg className="h-12 w-80 font-serif italic font-black text-5xl">
+                    <clipPath id="text-mask-nadi">
+                      <text x="0" y="45">Nadi Pariksha</text>
+                    </clipPath>
+                    <foreignObject x="0" y="0" width="100%" height="100%" clipPath="url(#text-mask-nadi)">
+                      <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+                        <source src="https://player.vimeo.com/progressive_redirect/playback/868352615/rendition/1080p/file.mp4?loc=external&signature=49673550257ad6bc1119565f49ce1ee644a86f03d5089e5fc87241f7e025f187" type="video/mp4" />
+                      </video>
+                    </foreignObject>
+                 </svg>
+                 <div className="absolute -bottom-2 left-0 h-1 w-20 bg-primary rounded-full blur-sm" />
+              </div>
+              <p className="text-muted-foreground text-xs uppercase tracking-[0.4em] font-black mt-2">Primal Constitution Discovery</p>
             </div>
           </div>
 
-          {/* Progress bar */}
-          <div className="h-2 rounded-full overflow-hidden" style={{ background: 'hsl(220 14% 14%)' }}>
-            <div
-              className="h-full rounded-full transition-all duration-500 ease-out progress-glow"
-              style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, #34d399, #38bdf8)' }}
-            />
+          {/* Liquid Progress Bar */}
+          <div className="relative h-1 w-full bg-white/5 rounded-full mb-6 overflow-hidden">
+            <motion.div 
+               initial={{ width: 0 }}
+               animate={{ width: `${progressPct}%` }}
+               transition={{ duration: 1, ease: "circOut" }}
+               className="h-full bg-primary shadow-[0_0_20px_rgba(var(--primary),0.5)] relative"
+            >
+               <div className="absolute top-0 right-0 h-full w-20 bg-gradient-to-r from-transparent to-white/50 blur-sm" />
+            </motion.div>
           </div>
-          <div className="flex justify-between mt-2">
+          
+          <div className="grid grid-cols-3 gap-8">
             {STEPS.map((s, i) => (
-              <span key={i} className={cn(
-                'text-[10px] uppercase tracking-wider font-medium transition-colors',
-                i === step ? 'text-primary' : i < step ? 'text-primary/50' : 'text-muted-foreground/40'
-              )}>
-                {s.title}
-              </span>
+              <div key={i} className="flex flex-col gap-2">
+                <span className={cn(
+                  'h-0.5 rounded-full transition-all duration-700',
+                  i <= step ? 'bg-primary' : 'bg-white/10'
+                )} />
+                <span className={cn(
+                  'text-[10px] font-black uppercase tracking-[0.2em]',
+                  i === step ? 'text-primary' : 'text-muted-foreground/40'
+                )}>
+                  {s.title}
+                </span>
+              </div>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* ── Question Card ── */}
-      <div className={cn('rounded-2xl p-6 transition-all duration-220', animating ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0')}
-           style={{ background: 'hsl(220 18% 9%)', border: '1px solid hsl(220 14% 16%)', transition: 'opacity 0.22s ease, transform 0.22s ease' }}>
-        <h2 className="text-lg font-bold mb-1" style={{ fontFamily: 'Outfit, sans-serif' }}>
-          {currentStep.title}
-        </h2>
-        <p className="text-sm text-muted-foreground mb-6">{currentStep.subtitle}</p>
+        {/* Question Area */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -30, filter: 'blur(10px)' }}
+            transition={{ duration: 0.8, ease: "anticipate" }}
+            className="grid lg:grid-cols-5 gap-12 items-start"
+          >
+            {/* Main Content */}
+            <div className="lg:col-span-3 space-y-16">
+              <div>
+                 <motion.h2 
+                   initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+                   className="text-5xl font-bold mb-4 font-serif leading-tight"
+                 >
+                   {currentStep.title}
+                 </motion.h2>
+                 <p className="text-xl text-muted-foreground/80 italic font-medium">{currentStep.subtitle}</p>
+              </div>
 
-        <div className="space-y-8">
-          {currentStep.questions.map((q) => (
-            <div key={q.id}>
-              <p className="text-sm font-semibold text-foreground mb-1">{q.question}</p>
-              {q.subtitle && <p className="text-xs text-muted-foreground mb-3">{q.subtitle}</p>}
-
-              {q.type === 'multi' ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {q.options.map((opt) => (
-                    <MultiCard
-                      key={opt.value}
-                      option={opt}
-                      selected={(getValue(q.id) as string[] || []).includes(opt.value)}
-                      onToggle={() => toggleSymptom(opt.value)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="grid gap-2">
-                  {q.options.map((opt) => (
-                    <SingleCard
-                      key={opt.value}
-                      option={opt}
-                      selected={getValue(q.id) === opt.value}
-                      onSelect={() => setValue(q.id, opt.value)}
-                    />
-                  ))}
-                </div>
-              )}
+              <div className="space-y-16">
+                {currentStep.questions.map((q) => (
+                  <div key={q.id}>
+                    <p className="text-2xl font-bold mb-8 flex items-center gap-3">
+                      <span className="h-8 w-1 bg-primary rounded-full shadow-[0_0_10px_#34d399]" />
+                      {q.question}
+                    </p>
+                    
+                    {q.type === 'multi' ? (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {q.options.map((opt) => (
+                          <MultiCard
+                            key={opt.value}
+                            option={opt}
+                            selected={(getValue(q.id) as string[] || []).includes(opt.value)}
+                            onToggle={() => toggleSymptom(opt.value)}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {q.options.map((opt) => (
+                          <SingleCard
+                            key={opt.value}
+                            option={opt}
+                            selected={getValue(q.id) === opt.value}
+                            onSelect={() => setValue(q.id, opt.value)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
 
-        {/* Live dosha bar (show from step 1 onwards) */}
-        <DoshaBar scores={scores} visible={step > 0} />
-      </div>
+            {/* Sidebar Mirror */}
+            <div className="lg:col-span-2 lg:sticky lg:top-32 h-fit">
+               <DoshaBar scores={scores} visible={true} />
+               
+               <div className="mt-12 flex flex-col gap-4">
+                 <button
+                   onClick={() => setStep(s => s - 1)}
+                   disabled={step === 0}
+                   className={cn(
+                     'w-full py-5 rounded-3xl text-sm font-black uppercase tracking-[0.3em] transition-all border border-white/10',
+                     step === 0 ? 'opacity-0' : 'hover:bg-white/5 bg-white/[0.02]'
+                   )}
+                 >
+                   Recall Previous Step
+                 </button>
 
-      {/* ── Navigation ── */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => go(-1)}
-          disabled={step === 0}
-          className={cn(
-            'flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
-            step === 0
-              ? 'opacity-0 pointer-events-none'
-              : 'text-muted-foreground hover:text-foreground hover:bg-accent border border-border'
-          )}
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back
-        </button>
-
-        <div className="flex items-center gap-2">
-          {STEPS.map((_, i) => (
-            <div key={i} className={cn(
-              'rounded-full transition-all duration-300',
-              i === step ? 'w-6 h-2' : 'w-2 h-2',
-              i <= step ? 'bg-primary' : 'bg-border'
-            )} />
-          ))}
-        </div>
-
-        {isLastStep ? (
-          <button
-            onClick={handleSubmit}
-            disabled={loading || !canProceed()}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:opacity-90 disabled:opacity-40 hover-lift"
-            style={{ background: '#34d399', color: 'hsl(220 20% 6%)' }}
-          >
-            {loading ? (
-              <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing...</>
-            ) : (
-              <><Sparkles className="h-4 w-4" /> Complete Assessment</>
-            )}
-          </button>
-        ) : (
-          <button
-            onClick={() => go(1)}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:opacity-90 hover-lift"
-            style={{ background: '#34d399', color: 'hsl(220 20% 6%)' }}
-          >
-            Next
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        )}
+                 {step < STEPS.length - 1 ? (
+                   <button
+                     onClick={() => {
+                       if (canProceed()) setStep(s => s + 1);
+                       else toast.error('Please complete this step to move forward');
+                     }}
+                     className={cn(
+                       'w-full py-6 rounded-3xl flex items-center justify-center gap-4 text-xl font-bold transition-all duration-500',
+                       canProceed() ? 'btn-vedic shadow-[0_20px_40px_rgba(var(--primary),0.3)]' : 'bg-white/5 border border-white/10 opacity-50'
+                     )}
+                   >
+                     Venture Deeper <ArrowRight className="h-6 w-6" />
+                   </button>
+                 ) : (
+                   <button
+                     onClick={handleSubmit}
+                     disabled={loading || !canProceed()}
+                     className="btn-vedic w-full py-6 rounded-3xl flex items-center justify-center gap-4 text-xl font-bold shadow-[0_20px_40px_rgba(var(--primary),0.4)]"
+                   >
+                     {loading ? <Loader2 className="h-7 w-7 animate-spin" /> : <><Sparkles className="h-7 w-7" /> Manifest Destiny</>}
+                   </button>
+                 )}
+               </div>
+               
+               <div className="mt-12 p-8 rounded-[2.5rem] bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 backdrop-blur-xl">
+                 <p className="text-xs text-primary font-black uppercase tracking-widest mb-4">Ayurvedic Wisdom</p>
+                 <p className="text-muted-foreground text-sm italic leading-relaxed">
+                   "The eye through which I see the Divine is the same eye through which the Divine sees me."
+                 </p>
+               </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <RemAide context="assessment" />
+      
+      <style>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
+        }
+      `}</style>
     </div>
   );
 }

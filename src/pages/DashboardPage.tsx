@@ -1,283 +1,394 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
+import { api } from '@/db/api';
+import { HabitTracking, Feedback } from '@/types';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import {
-  ArrowRight, Activity, BookOpen, Dumbbell, MessageSquare,
+  Activity, BookOpen, Dumbbell, MessageSquare,
   Wind, Flame, Mountain, Sun, Leaf, Droplets, Star,
-  TrendingUp, Heart, Coffee,
+  TrendingUp, Heart, Check, Smile, Download, ExternalLink, Sparkles, Plus, ThumbsUp
 } from 'lucide-react';
+import FeedbackForm from '@/components/feedback/FeedbackForm';
 
-const AMBER = 'hsl(32 85% 55%)';
-const AMBER_DIM = 'hsl(32 60% 42%)';
-const GOLD = 'hsl(42 75% 55%)';
-const TERRA = 'hsl(20 55% 42%)';
-const CARD_BG = 'hsl(22 22% 9%)';
-const BORDER = 'hsl(32 20% 14%)';
-const TEXT = 'hsl(38 20% 80%)';
-const TEXT_MUTED = 'hsl(38 12% 48%)';
-const BARK = 'hsl(38 25% 90%)';
+const SAGE = 'var(--sage)';
+const SAFFRON = 'var(--saffron)';
 
 const DOSHA_INFO = {
-  vata:  { icon: Wind,     color: '#6ab4d4', bg: '#6ab4d41a', label: 'Vata',  trait: 'Creative & Airy',  element: 'Air + Space' },
-  pitta: { icon: Flame,    color: '#d47a3a', bg: '#d47a3a1a', label: 'Pitta', trait: 'Sharp & Dynamic',  element: 'Fire + Water' },
-  kapha: { icon: Mountain, color: '#6b8f6e', bg: '#6b8f6e1a', label: 'Kapha', trait: 'Calm & Stable',    element: 'Earth + Water' },
+  vata:  { icon: Wind,     color: '#6ab4d4', label: 'Vata',  trait: 'Creative & Airy',  element: 'Air + Space', recHerb: 'Ashwagandha', recTip: 'Focus on warm, grounding foods.' },
+  pitta: { icon: Flame,    color: '#d47a3a', label: 'Pitta', trait: 'Sharp & Dynamic',  element: 'Fire + Water', recHerb: 'Shatavari', recTip: 'Avoid spicy food and stay cool.' },
+  kapha: { icon: Mountain, color: '#6b8f6e', label: 'Kapha', trait: 'Calm & Stable',    element: 'Earth + Water', recHerb: 'Ginger', recTip: 'Prioritize movement and light meals.' },
 };
 
 const QUICK_ACTIONS = [
-  { icon: Activity,      title: 'Health Assessment', desc: 'Discover your dosha balance',    url: '/assessment',  color: AMBER,     border: 'hsl(32 50% 28%)' },
-  { icon: BookOpen,      title: 'Diet Plan',          desc: 'Seasonal nutrition guidance',    url: '/diet',        color: GOLD,      border: 'hsl(38 45% 28%)' },
-  { icon: Dumbbell,      title: 'Dinacharya',         desc: 'Daily Ayurvedic routines',       url: '/exercise',    color: TERRA,     border: 'hsl(20 40% 26%)' },
-  { icon: MessageSquare, title: 'AI Assistant',       desc: 'Ask about herbs & remedies',     url: '/chat',        color: '#6ab4d4', border: 'hsl(200 40% 28%)' },
+  { icon: Activity,      title: 'Remedies', desc: 'Find healing',    url: '/remedies',  color: SAGE },
+  { icon: Leaf,          title: 'Herb Library',   desc: 'Plant wisdom',    url: '/herbs',     color: SAFFRON },
+  { icon: BookOpen,      title: 'Diet Plan',      desc: 'Nutrition guide', url: '/diet',        color: SAGE },
+  { icon: MessageSquare, title: 'AI Assistant',   desc: 'Talk to Vaidya',  url: '/chat',        color: SAFFRON },
 ];
 
 const WELLNESS_TIPS = [
-  { icon: Coffee,   tip: 'Start with warm water + 1 tsp ghee on an empty stomach — Agni igniter for your day.',      time: 'Morning',    color: AMBER },
+  { icon: Droplets, tip: 'Start with warm water + 1 tsp ghee on an empty stomach — Agni igniter for your day.',      time: 'Morning',    color: SAGE },
   { icon: Leaf,     tip: 'Sip CCF tea (Cumin, Coriander, Fennel) after meals to support Agni naturally.',             time: 'After meals', color: '#6b8f6e' },
-  { icon: Droplets, tip: 'Abhyanga — warm sesame oil self-massage calms Vata and nourishes every tissue.',             time: 'Morning',    color: TERRA },
-  { icon: Heart,    tip: 'Practice Nadi Shodhana (alternate nostril breathing) for 10 min — resets your nervous system.', time: 'Dawn',   color: GOLD },
-  { icon: Star,     tip: 'Walk 100 steps (Shatapavali) after lunch — ignites digestive fire and clears ama.',           time: 'Afternoon', color: AMBER },
+  { icon: Heart,    tip: 'Practice Nadi Shodhana (alternate nostril breathing) for 10 min — resets your nervous system.', time: 'Dawn',   color: SAFFRON },
+  { icon: Star,     tip: 'Walk 100 steps (Shatapavali) after lunch — ignites digestive fire and clears ama.',           time: 'Afternoon', color: SAGE },
 ];
 
-function StatCard({ label, value, sub, color }: { label: string; value: string; sub: string; color: string }) {
-  return (
-    <div className="rounded-xl p-4" style={{ background: `${color}0d`, border: `1.5px solid ${color}25` }}>
-      <p className="text-xs font-medium mb-1" style={{ color: `${color}bb` }}>{label}</p>
-      <p className="text-2xl font-bold" style={{ fontFamily: 'Playfair Display, serif', color }}>{value}</p>
-      <p className="text-xs mt-1" style={{ color: TEXT_MUTED }}>{sub}</p>
-    </div>
-  );
-}
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1 }
+};
 
 export default function DashboardPage() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [tipIdx, setTipIdx] = useState(0);
   const [greeting, setGreeting] = useState('Namaste');
+  const [assignments, setAssignments] = useState<HabitTracking[]>([]);
+  const [feedback, setFeedback] = useState<Feedback[]>([]);
+  const [loadingTasks, setLoadingTasks] = useState(true);
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
 
   useEffect(() => {
     const h = new Date().getHours();
-    setGreeting(h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening');
-    const t = setInterval(() => setTipIdx(i => (i + 1) % WELLNESS_TIPS.length), 6000);
-    return () => clearInterval(t);
-  }, []);
+    setGreeting(h < 12 ? 'Suprabhatam' : h < 17 ? 'Shubh Aparahna' : 'Shubh Sandhya');
+    const t = setInterval(() => setTipIdx(i => (i + 1) % WELLNESS_TIPS.length), 8000);
+    
+    if (profile?.id) {
+       loadAssignments();
+       loadFeedback();
+    }
 
-  const firstName = profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Friend';
-  const userDosha = (profile?.lifestyle_info?.dosha || profile?.lifestyle_info?.primary_dosha) as keyof typeof DOSHA_INFO | undefined;
-  const doshaInfo = userDosha ? DOSHA_INFO[userDosha] : null;
+    return () => clearInterval(t);
+  }, [profile?.id]);
+
+  const loadAssignments = async () => {
+    try {
+      const allHabits: HabitTracking[] = await api.habitTracking.listByUser(profile!.id);
+      const today = new Date().toDateString();
+      const relevant = allHabits.filter(h => 
+        h.habit_type === 'assignment' && 
+        (new Date(h.created_at).toDateString() === today || !h.completed_at)
+      );
+      setAssignments(relevant.reverse());
+    } catch (error) {
+       console.error('Failed to load assignments');
+    } finally {
+      setLoadingTasks(false);
+    }
+  };
+
+  const loadFeedback = async () => {
+    try {
+      const data = await api.feedback.list(5);
+      setFeedback(data);
+    } catch (error) {
+      console.error('Failed to load community feedback');
+    }
+  };
+
+  const toggleTask = async (id: string, currentlyCompleted: boolean) => {
+    const now = new Date().toISOString();
+    setAssignments(prev => prev.map(a => 
+      a.id === id ? { ...a, completed_at: currentlyCompleted ? '' : now } : a
+    ));
+    toast.success(currentlyCompleted ? 'Task reopened' : 'Great job on your assignment! 🌿');
+    if (!currentlyCompleted) {
+      setShowFeedbackForm(true); // Prompt for feedback on completion
+    }
+  };
+
+  const handleHelpful = async (id: string, count: number) => {
+    try {
+      await api.feedback.markHelpful(id, count);
+      setFeedback(prev => prev.map(f => f.id === id ? { ...f, helpful_count: count + 1 } : f));
+      toast.success('Wisdom marked as helpful! 🍃');
+    } catch (e) {
+      toast.error('Failed to update.');
+    }
+  };
+
+  const downloadHealthPlan = () => {
+    const content = `AYURVEDIC HEALTH PLAN\n\nUser: ${profile?.full_name || 'Seeker'}\nDate: ${new Date().toLocaleDateString()}\n\nDAILY ASSIGNMENTS:\n${assignments.map(a => `- [${a.completed_at ? 'X' : ' '}] ${a.habit_name}`).join('\n')}\n\nRECOLLECTED WISDOM:\nStay consistent with your Dinacharya (daily routine). Balance is not a destination, it is a journey.`;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `AyurHealthPlan_${new Date().toISOString().split('T')[0]}.txt`;
+    link.click();
+    toast.success('Health Plan downloaded successfully! 📄');
+  };
+
+  const firstName = profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Seeker';
+  const userDosha = (profile?.lifestyle_info?.dosha || profile?.lifestyle_info?.primary_dosha || 'vata').toLowerCase() as keyof typeof DOSHA_INFO;
+  const doshaInfo = DOSHA_INFO[userDosha] || DOSHA_INFO.vata;
   const tip = WELLNESS_TIPS[tipIdx];
   const TipIcon = tip.icon;
-  const DoshaIcon = doshaInfo?.icon;
 
   return (
-    <div className="min-h-screen space-y-5 animate-fade-slide-up" style={{ color: TEXT }}>
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="p-6 md:p-10 max-w-7xl mx-auto space-y-10 pb-20"
+    >
+      {/* ── Feedback Modal ── */}
+      <AnimatePresence>
+        {showFeedbackForm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-background/80 backdrop-blur-xl">
+             <div className="w-full max-w-2xl transform">
+               <FeedbackForm 
+                 onSuccess={() => setShowFeedbackForm(false)} 
+                 onCancel={() => setShowFeedbackForm(false)} 
+               />
+             </div>
+          </div>
+        )}
+      </AnimatePresence>
 
-      {/* ── Hero Banner ── */}
-      <div className="relative rounded-2xl overflow-hidden p-6 md:p-8"
-           style={{
-             background: 'linear-gradient(135deg, hsl(22 28% 10%), hsl(25 35% 12%), hsl(32 30% 10%))',
-             border: `1px solid ${BORDER}`,
-             boxShadow: '0 8px 40px hsl(20 40% 4% / 0.8), inset 0 1px 0 hsl(38 30% 22% / 0.08)',
-           }}>
-        {/* Glow pulse blob */}
-        <div className="absolute top-0 right-0 w-64 h-64 pointer-events-none"
-             style={{ background: 'radial-gradient(circle, hsl(32 60% 25% / 0.4), transparent)', borderRadius: '50%', transform: 'translate(30%, -30%)' }} />
-        {/* Mandala rings */}
-        <div className="absolute top-4 right-8 w-28 h-28 mandala-ring opacity-30 pointer-events-none" />
-        <div className="absolute bottom-2 right-32 w-16 h-16 mandala-ring-fast opacity-20 float-animate pointer-events-none" />
-        <div className="absolute inset-0 pattern-dots opacity-30 pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* ── Header ── */}
+      <motion.div variants={itemVariants} className="relative vedic-card p-8 md:p-12 overflow-hidden lush-glow">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 badge-amber mb-3">
-              <Leaf className="h-3 w-3" /> Ayurvedic Wellness Dashboard
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/15 border border-primary/30 text-[10px] uppercase tracking-[0.2em] font-bold text-primary mb-4">
+              <Leaf className="h-3 w-3" /> Digital Sanctuary
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold mb-1" style={{ fontFamily: 'Outfit, sans-serif', color: BARK }}>
-              {greeting}, <span className="gradient-text neon-amber-text">{firstName}</span> 🙏
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight">
+              {greeting}, <span className="text-primary italic font-serif grayscale-[0.2]">{firstName}</span>
             </h1>
-            <p className="text-sm" style={{ color: TEXT_MUTED }}>
-              {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+            <p className="text-muted-foreground font-semibold">
+              Today is {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
             </p>
           </div>
 
-          {doshaInfo && DoshaIcon ? (
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                 style={{ background: doshaInfo.bg, border: `1.5px solid ${doshaInfo.color}35` }}>
-              <div className="h-10 w-10 rounded-xl flex items-center justify-center float-animate"
-                   style={{ background: `${doshaInfo.color}20`, border: `1px solid ${doshaInfo.color}40` }}>
-                <DoshaIcon className="h-5 w-5" style={{ color: doshaInfo.color }} />
-              </div>
-              <div>
-                <p className="text-xs" style={{ color: TEXT_MUTED }}>Your Dosha</p>
-                <p className="font-bold" style={{ fontFamily: 'Playfair Display, serif', color: doshaInfo.color }}>{doshaInfo.label}</p>
-                <p className="text-xs" style={{ color: TEXT_MUTED }}>{doshaInfo.element}</p>
-              </div>
-            </div>
-          ) : (
-            <button onClick={() => navigate('/assessment')}
-                    className="btn-amber flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl hover-lift">
-              <Activity className="h-4 w-4" /> Take Assessment
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* ── Stats ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Wellness Score" value="72%" sub="Keep improving 📈" color={AMBER} />
-        <StatCard label="Days Active"    value="12"  sub="Great consistency!"  color={GOLD} />
-        <StatCard label="Assessments"    value="1"   sub="Last: this week"     color={TERRA} />
-        <StatCard label="Tips Followed"  value="8"   sub="Out of 10 today"     color="#6ab4d4" />
-      </div>
-
-      <div className="grid md:grid-cols-3 gap-5">
-        {/* Quick actions */}
-        <div className="md:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-sm" style={{ fontFamily: 'Outfit, sans-serif', color: BARK }}>Quick Actions</h2>
-            <div className="flex-1 mx-4 h-px" style={{ background: BORDER }} />
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {QUICK_ACTIONS.map((a, i) => {
-              const Icon = a.icon;
-              return (
-                <button key={i} onClick={() => navigate(a.url)}
-                        className="glass-card rounded-2xl p-5 text-left flex items-start gap-4 hover-lift shine-effect">
-                  <div className="h-11 w-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                       style={{ background: `${a.color}18`, border: `1.5px solid ${a.border}` }}>
-                    <Icon className="h-5 w-5" style={{ color: a.color }} />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm mb-0.5" style={{ fontFamily: 'Outfit, sans-serif', color: BARK }}>{a.title}</p>
-                    <p className="text-xs" style={{ color: TEXT_MUTED }}>{a.desc}</p>
-                  </div>
-                  <ArrowRight className="h-4 w-4 ml-auto mt-0.5 opacity-30 flex-shrink-0" style={{ color: a.color }} />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Rotating tip */}
-        <div className="md:col-span-1">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-sm" style={{ fontFamily: 'Outfit, sans-serif', color: BARK }}>Daily Wisdom</h2>
-            <div className="flex-1 mx-4 h-px" style={{ background: BORDER }} />
-          </div>
-          <div className="coffee-card rounded-2xl p-5 flex flex-col" style={{ minHeight: '200px' }}>
-            <div className="flex-1">
-              <div className="inline-flex items-center gap-1.5 badge-amber mb-4">
-                <TipIcon className="h-3 w-3" style={{ color: tip.color }} /> {tip.time}
-              </div>
-              <p className="text-sm leading-relaxed italic" style={{ color: TEXT, fontFamily: 'Georgia, serif' }}>
-                "{tip.tip}"
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 mt-4">
-              {WELLNESS_TIPS.map((_, i) => (
-                <button key={i} onClick={() => setTipIdx(i)}
-                        className="rounded-full transition-all duration-300"
-                        style={{ width: i === tipIdx ? 18 : 5, height: 5, background: i === tipIdx ? AMBER : `${AMBER}35` }} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Dosha overview + seasonal ── */}
-      <div className="grid md:grid-cols-5 gap-5">
-        <div className="md:col-span-2 amber-card rounded-2xl p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="h-8 w-8 rounded-lg flex items-center justify-center"
-                 style={{ background: 'hsl(32 40% 18%)', border: '1px solid hsl(32 40% 28% / 0.5)' }}>
-              <Sun className="h-4 w-4" style={{ color: AMBER }} />
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center gap-4 p-5 rounded-3xl bg-primary/5 border border-primary/20 backdrop-blur-md shadow-2xl shadow-primary/5"
+          >
+            <div className="h-14 w-14 rounded-2xl flex items-center justify-center bg-primary/20 border border-primary/30 animate-lotus">
+              <doshaInfo.icon className="h-7 w-7 text-primary" />
             </div>
             <div>
-              <p className="text-xs font-medium" style={{ color: AMBER_DIM }}>Seasonal Guide</p>
-              <p className="text-sm font-bold" style={{ fontFamily: 'Outfit, sans-serif', color: BARK }}>Vasanta (Spring)</p>
+              <p className="text-[10px] text-primary/70 uppercase tracking-[0.2em] font-black">Your Dosha</p>
+              <p className="text-2xl font-bold font-serif text-primary">{doshaInfo.label}</p>
+              <p className="text-xs text-muted-foreground font-medium">{doshaInfo.element}</p>
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* ── Quick Actions ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        {QUICK_ACTIONS.map((a, i) => (
+          <motion.button
+            key={i}
+            variants={itemVariants}
+            whileHover={{ y: -8, scale: 1.02 }}
+            onClick={() => navigate(a.url)}
+            className="vedic-card p-6 text-left group organic-mesh"
+          >
+            <div className="h-12 w-12 rounded-2xl flex items-center justify-center bg-primary/10 border border-primary/20 group-hover:border-primary/60 transition-all mb-5">
+              <a.icon className="h-6 w-6 text-primary" />
+            </div>
+            <h3 className="font-bold text-lg mb-1 tracking-tight">{a.title}</h3>
+            <p className="text-xs text-muted-foreground font-medium">{a.desc}</p>
+          </motion.button>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Daily Assignments Checklist */}
+        <motion.div variants={itemVariants} className="lg:col-span-2 vedic-card p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-xl font-bold flex items-center gap-3">
+              <Star className="h-5 w-5 text-primary" /> My Daily Assignments
+            </h3>
+            <div className="flex gap-2">
+              <button 
+                onClick={downloadHealthPlan}
+                disabled={assignments.length === 0}
+                className="text-[10px] font-black text-primary px-3 py-1 rounded-full bg-primary/15 border border-primary/30 uppercase tracking-widest hover:bg-primary/25 disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <Download className="h-3 w-3 inline mr-1" /> Export
+              </button>
+              <button 
+                onClick={() => navigate('/remedies')}
+                className="text-[10px] font-black text-primary px-3 py-1 rounded-full bg-primary/15 border border-primary/30 uppercase tracking-[0.2em] hover:bg-primary/25 transition-colors"
+              >
+                Get More
+              </button>
             </div>
           </div>
-          <p className="text-xs leading-relaxed mb-4" style={{ color: TEXT_MUTED }}>
-            Kapha detox season — light, bitter foods and vigorous exercise to shed winter accumulation.
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {['Bitter gourd', 'Barley', 'Millet', 'Ginger tea', 'Greens'].map(f => (
-              <span key={f} className="text-[10px] px-2 py-0.5 rounded-full font-medium"
-                    style={{ background: 'hsl(32 30% 18%)', color: AMBER_DIM, border: '1px solid hsl(32 35% 22%)' }}>
-                {f}
-              </span>
+          
+          <div className="space-y-4">
+            {assignments.length > 0 ? (
+              assignments.map((a) => (
+                <div 
+                  key={a.id}
+                  className={cn(
+                    "flex items-center justify-between p-5 rounded-2xl border transition-all duration-500",
+                    a.completed_at 
+                      ? "bg-emerald-500/5 border-emerald-500/20 opacity-60" 
+                      : "bg-white/5 border-white/10 hover:bg-white/10"
+                  )}
+                >
+                  <div className="flex items-center gap-4">
+                    <button 
+                      onClick={() => toggleTask(a.id, !!a.completed_at)}
+                      className={cn(
+                        "h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all",
+                        a.completed_at 
+                          ? "bg-emerald-500 border-emerald-500" 
+                          : "border-primary/40 hover:border-primary"
+                      )}
+                    >
+                      {a.completed_at && <Check className="h-4 w-4 text-background" strokeWidth={4} />}
+                    </button>
+                    <div>
+                       <p className={cn("font-bold text-sm", a.completed_at && "line-through")}>{a.habit_name}</p>
+                       <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-black mt-1">Due Today</p>
+                    </div>
+                  </div>
+                  {a.completed_at && <Smile className="h-5 w-5 text-emerald-500 animate-pulse" />}
+                </div>
+              ))
+            ) : (
+              <div className="py-12 text-center border-2 border-dashed border-white/5 rounded-3xl">
+                 <Leaf className="h-10 w-10 text-muted-foreground/20 mx-auto mb-4" />
+                 <p className="text-sm text-muted-foreground font-medium italic">No assignments active. Seek wisdom in the <span className="text-primary cursor-pointer underline" onClick={() => navigate('/remedies')}>Remedy Finder</span>.</p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Daily Tip */}
+        <motion.div variants={itemVariants} className="lg:col-span-1 vedic-card p-8 flex flex-col justify-between min-h-[300px] border-accent/30 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-3xl -mr-16 -mt-16" />
+          <div className="relative z-10">
+            <div className="h-10 w-10 rounded-xl flex items-center justify-center bg-accent/10 border border-accent/30 mb-6 lush-glow">
+              <TipIcon className="h-5 w-5 text-accent" />
+            </div>
+            <h3 className="text-xl font-bold mb-4 font-serif italic text-accent underline decoration-accent/30 underline-offset-4">Daily Wisdom</h3>
+            <AnimatePresence mode="wait">
+              <motion.p 
+                key={tipIdx}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                className="text-lg leading-relaxed text-foreground/95 font-serif italic"
+              >
+                "{tip.tip}"
+              </motion.p>
+            </AnimatePresence>
+          </div>
+          <div className="flex gap-2 mt-8 relative z-10">
+            {WELLNESS_TIPS.map((_, i) => (
+              <div key={i} className={`h-1 rounded-full transition-all duration-700 ${i === tipIdx ? 'w-10 bg-accent' : 'w-2 bg-accent/20'}`} />
             ))}
           </div>
-        </div>
+        </motion.div>
+      </div>
 
-        <div className="md:col-span-3 glass-card rounded-2xl p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-sm" style={{ fontFamily: 'Outfit, sans-serif', color: BARK }}>The Three Doshas</h3>
-            <button onClick={() => navigate('/assessment')}
-                    className="text-xs font-medium flex items-center gap-1"
-                    style={{ color: AMBER }}
-                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
-                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
-              Take assessment <ArrowRight className="h-3 w-3" />
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Community Healing Feed */}
+        <motion.div variants={itemVariants} className="lg:col-span-2 vedic-card p-8">
+          <div className="flex items-center justify-between mb-10">
+            <h3 className="text-xl font-bold flex items-center gap-3">
+              <Sparkles className="h-5 w-5 text-primary" /> Community Healing
+            </h3>
+            <button 
+              onClick={() => setShowFeedbackForm(true)}
+              className="text-[10px] font-black text-primary px-3 py-1 rounded-full bg-primary/15 border border-primary/30 uppercase tracking-[0.2em] hover:bg-primary/25 transition-colors"
+            >
+              Share Journey
             </button>
           </div>
-          <div className="space-y-2.5">
-            {Object.entries(DOSHA_INFO).map(([key, d]) => {
-              const Icon = d.icon;
-              const isUser = userDosha === key;
-              return (
-                <div key={key} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200"
-                     style={{
-                       background: isUser ? d.bg : CARD_BG,
-                       border: `1.5px solid ${isUser ? d.color + '40' : BORDER}`,
-                       boxShadow: isUser ? `0 0 12px ${d.color}18` : 'none',
-                     }}>
-                  <div className="h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                       style={{ background: `${d.color}15`, border: `1px solid ${d.color}30` }}>
-                    <Icon className="h-4 w-4" style={{ color: d.color }} />
+          
+          <div className="space-y-6">
+            {feedback.length > 0 ? (
+              feedback.map((f, i) => (
+                <motion.div 
+                  key={f.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="p-6 rounded-3xl bg-white/[0.03] border border-white/5 group hover:border-primary/20 transition-all"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
+                        {f.user_name[0]}
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold">{f.user_name}</p>
+                        <div className="flex gap-0.5 mt-0.5">
+                          {[...Array(5)].map((_, i) => (
+                            <Leaf key={i} className={cn("h-2.5 w-2.5", i < f.rating ? "text-primary" : "text-white/10")} />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground/60">{new Date(f.created_at).toLocaleDateString()}</span>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold" style={{ fontFamily: 'Playfair Display, serif', color: isUser ? d.color : TEXT }}>
-                      {d.label} {isUser && '✓'}
-                    </p>
-                    <p className="text-xs" style={{ color: TEXT_MUTED }}>{d.element}</p>
+                  <p className="text-sm italic font-serif text-muted-foreground leading-relaxed mb-4">"{f.comment}"</p>
+                  <div className="flex items-center gap-4">
+                     <button 
+                       onClick={() => handleHelpful(f.id, f.helpful_count)}
+                       className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground/60 hover:text-primary transition-colors group"
+                     >
+                       <ThumbsUp className="h-3 w-3 group-hover:scale-110 transition-transform" />
+                       Helpful ({f.helpful_count})
+                     </button>
                   </div>
-                  <span className="text-xs font-medium" style={{ color: d.color }}>{d.trait}</span>
-                </div>
-              );
-            })}
+                </motion.div>
+              ))
+            ) : (
+                <div className="py-12 text-center opacity-40 italic font-mono text-xs">Awaiting community wisdom...</div>
+            )}
           </div>
-        </div>
-      </div>
+        </motion.div>
 
-      {/* ── Progress ── */}
-      <div className="glass-card rounded-2xl p-5">
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="font-bold text-sm" style={{ fontFamily: 'Outfit, sans-serif', color: BARK }}>
-            <TrendingUp className="inline h-4 w-4 mr-1.5" style={{ color: AMBER }} />
-            Wellness Progress
-          </h3>
-          <span className="badge-amber">This Week</span>
-        </div>
-        <div className="grid md:grid-cols-3 gap-5">
-          {[
-            { label: 'Diet adherence',   val: 78, color: AMBER },
-            { label: 'Exercise routine', val: 60, color: GOLD },
-            { label: 'Sleep quality',    val: 85, color: '#6ab4d4' },
-          ].map(p => (
-            <div key={p.label}>
-              <div className="flex justify-between text-xs mb-2">
-                <span style={{ color: TEXT_MUTED }}>{p.label}</span>
-                <span className="font-bold" style={{ color: p.color }}>{p.val}%</span>
-              </div>
-              <div className="h-2 rounded-full overflow-hidden" style={{ background: 'hsl(22 18% 12%)' }}>
-                <div className="h-full rounded-full transition-all duration-700 progress-glow"
-                     style={{ width: `${p.val}%`, background: `linear-gradient(90deg, ${p.color}88, ${p.color})` }} />
-              </div>
+        {/* Seasonal / Personalized */}
+        <motion.div variants={itemVariants} className="lg:col-span-1 space-y-8">
+          <div className="p-8 rounded-[2rem] bg-accent/5 border border-accent/20 flex gap-6 items-center hover:bg-accent/10 transition-colors relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
+                <Sun className="h-12 w-12 text-accent" />
             </div>
-          ))}
-        </div>
+            <div className="h-16 w-16 rounded-3xl flex items-center justify-center bg-accent/15 border border-accent/30 shrink-0 lush-glow relative z-10">
+                <Sparkles className="h-8 w-8 text-accent" />
+            </div>
+            <div className="relative z-10">
+                <p className="text-[10px] font-black text-accent/70 uppercase tracking-[0.2em] mb-1">Vaidya's Tip</p>
+                <h4 className="text-2xl font-bold mb-2 tracking-tight">{doshaInfo.label} Guide</h4>
+                <p className="text-sm text-muted-foreground font-medium">{doshaInfo.recTip}</p>
+            </div>
+          </div>
+          <div className="p-8 rounded-[2rem] bg-emerald-500/5 border border-emerald-500/20 flex gap-6 items-center hover:bg-emerald-500/10 transition-colors relative overflow-hidden group">
+             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
+                <Leaf className="h-12 w-12 text-emerald-500" />
+            </div>
+            <div className="h-16 w-16 rounded-3xl flex items-center justify-center bg-emerald-500/15 border border-emerald-500/30 shrink-0 lush-glow relative z-10">
+                <Heart className="h-8 w-8 text-emerald-500" />
+            </div>
+            <div className="relative z-10">
+                <p className="text-[10px] font-black text-emerald-500/70 uppercase tracking-[0.2em] mb-1">Dosha-Specific Herb</p>
+                <h4 className="text-2xl font-bold mb-2 text-emerald-500 italic font-serif tracking-tight">{doshaInfo.recHerb}</h4>
+                <p className="text-sm text-muted-foreground font-medium">The ideal healer to balance your current elemental path.</p>
+            </div>
+          </div>
+        </motion.div>
       </div>
-
-    </div>
+    </motion.div>
   );
 }

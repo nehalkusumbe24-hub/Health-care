@@ -9,38 +9,26 @@ import type {
   UserRole,
 } from '@/types';
 
+import { supabase } from '@/lib/supabase';
+
 const BASE_URL = import.meta.env.VITE_API_URL || '';
-const API_URL = `${BASE_URL}/api`;
 
-async function fetchAPI(endpoint: string, options: RequestInit = {}) {
+const fetchAPI = async (endpoint: string, options: any = {}) => {
   const token = localStorage.getItem('token');
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-    ...options.headers,
-  };
-
-  const response = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
-  const text = await response.text();
-  if (!response.ok) {
-    let errorMessage = 'API call failed';
-    if (text) {
-      try {
-        const errorJson = JSON.parse(text);
-        errorMessage = errorJson.error || errorJson.message || errorMessage;
-      } catch {
-        errorMessage = text;
-      }
-    }
-    throw new Error(errorMessage);
+  const res = await fetch(`${BASE_URL}/api${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : '',
+      ...options.headers,
+    },
+  });
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ error: 'An error occurred' }));
+    throw new Error(error.error || error.message || 'API request failed');
   }
-  if (!text) return null;
-  try {
-    return JSON.parse(text);
-  } catch {
-    return text;
-  }
-}
+  return res.json();
+};
 
 export const api = {
   profiles: {
@@ -111,7 +99,7 @@ export const api = {
   },
 
   assessments: {
-    async create(assessmentData: Partial<Assessment>) {
+    async create(assessmentData: any) {
       return await fetchAPI('/data/assessments', {
         method: 'POST',
         body: JSON.stringify(assessmentData),
@@ -119,15 +107,19 @@ export const api = {
     },
 
     async getById(id: string) {
-      return await fetchAPI(`/data/assessments/${id}`);
+      try {
+        return await fetchAPI(`/data/assessments/${id}`);
+      } catch (e) {
+        return null;
+      }
     },
 
-    async listByUser(userId: string, limit = 50) {
-      return await fetchAPI(`/data/assessments?user_id=${userId}&limit=${limit}`);
+    async listByUser(userId: string, _limit = 50) {
+      return await fetchAPI(`/data/assessments?user_id=${userId}`);
     },
 
-    async listAll(limit = 50) {
-      return await fetchAPI(`/data/assessments?limit=${limit}`);
+    async listAll(_limit = 50) {
+      return await fetchAPI('/data/assessments');
     },
 
     async update(id: string, updates: Partial<Assessment>) {
@@ -229,7 +221,6 @@ export const api = {
     },
 
     async getRecentByType(userId: string, habitType: string) {
-      // Basic filtering, 'days' logic should ideally be on server but we filter here for simplicity if needed
       return await fetchAPI(`/data/habit_tracking?user_id=${userId}&habit_type=${habitType}`);
     },
   },
@@ -262,6 +253,26 @@ export const api = {
 
     async listEscalated(doctorId: string, limit = 50) {
       return await fetchAPI(`/data/chat_messages?escalated_to=${doctorId}&is_escalated=true&limit=${limit}`);
+    },
+  },
+
+  feedback: {
+    async create(feedbackData: any) {
+      return await fetchAPI('/data/feedback', {
+        method: 'POST',
+        body: JSON.stringify(feedbackData),
+      });
+    },
+
+    async list(limit = 20) {
+      return await fetchAPI(`/data/feedback?_limit=${limit}&_sort=created_at&_order=desc`);
+    },
+
+    async markHelpful(id: string, currentCount: number) {
+      return await fetchAPI(`/data/feedback/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ helpful_count: currentCount + 1 }),
+      });
     },
   },
 };

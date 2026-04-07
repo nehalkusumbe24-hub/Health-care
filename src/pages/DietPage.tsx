@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/db/api';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Leaf, Apple, Coffee, Utensils, ArrowRight, Flame, Droplets, Wind } from 'lucide-react';
+import { Leaf, Apple, Coffee, Utensils, ArrowRight, Flame, Droplets, Wind, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { DietPlan } from '@/types';
 import RemAide from '@/components/common/RemAide';
@@ -20,9 +18,9 @@ const AYURVEDIC_FOODS = [
 ];
 
 const FOODS_BY_DOSHA = [
-  { dosha: "Vata", icon: Wind, color: "text-sky-600", bgColor: "from-sky-500/10 to-blue-500/10", favor: ["Warm soups & stews", "Cooked grains (rice, oats)", "Sweet fruits (bananas, mangos)", "Root vegetables", "Warm milk with spices"], avoid: ["Raw salads", "Cold drinks", "Dry crackers", "Caffeine"] },
-  { dosha: "Pitta", icon: Flame, color: "text-orange-600", bgColor: "from-orange-500/10 to-red-500/10", favor: ["Cooling foods (cucumber, melon)", "Sweet fruits (grapes, pears)", "Green vegetables", "Coconut & mint", "Basmati rice"], avoid: ["Spicy food", "Sour fruits", "Fried food", "Red meat"] },
-  { dosha: "Kapha", icon: Droplets, color: "text-green-600", bgColor: "from-green-500/10 to-teal-500/10", favor: ["Light, warm foods", "Spicy dishes", "Leafy greens", "Legumes & beans", "Honey (in moderation)"], avoid: ["Heavy dairy", "Fried foods", "Sweets", "Cold desserts"] },
+  { dosha: "Vata", icon: Wind, color: "#6ab4d4", favor: ["Warm soups & stews", "Cooked grains (rice, oats)", "Sweet fruits", "Root vegetables"], avoid: ["Raw salads", "Cold drinks", "Dry crackers", "Caffeine"] },
+  { dosha: "Pitta", icon: Flame, color: "#fb923c", favor: ["Cooling foods (cucumber, melon)", "Sweet fruits (grapes, pears)", "Green vegetables", "Coconut & mint"], avoid: ["Spicy food", "Sour fruits", "Fried food", "Red meat"] },
+  { dosha: "Kapha", icon: Droplets, color: "#34d399", favor: ["Light, warm foods", "Spicy dishes", "Leafy greens", "Legumes & beans"], avoid: ["Heavy dairy", "Fried foods", "Sweets", "Cold desserts"] },
 ];
 
 export default function DietPage() {
@@ -33,7 +31,6 @@ export default function DietPage() {
   useEffect(() => {
     const loadDietPlan = async () => {
       if (!profile?.id) return;
-
       try {
         const plan = await api.dietPlans.getActiveByUser(profile.id);
         setDietPlan(plan);
@@ -43,222 +40,169 @@ export default function DietPage() {
         setLoading(false);
       }
     };
-
     loadDietPlan();
   }, [profile?.id]);
 
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-32 w-full bg-muted" />
-        <Skeleton className="h-64 w-full bg-muted" />
-      </div>
-    );
-  }
+  if (loading) return <div className="p-10 space-y-6"><Skeleton className="h-40 w-full bg-white/5" /><Skeleton className="h-80 w-full bg-white/5" /></div>;
 
-  if (!dietPlan) {
-    return (
-      <div className="space-y-6">
-        <Card className="border-primary/50 glass-effect relative overflow-hidden">
-          <div className="absolute inset-0 gradient-bg opacity-50" />
-          <CardHeader className="relative z-10">
-            <CardTitle className="text-2xl">🍽️ Personalized Diet Plan</CardTitle>
-            <CardDescription>
-              Complete your health assessment to receive a diet plan tailored to your dosha type
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <Link to="/assessment">
-              <Button size="lg" className="shadow-lg">
-                Start Assessment
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-
-        {/* Ayurvedic Superfoods */}
-        <div>
-          <h2 className="text-xl font-semibold mb-4">🌿 Ayurvedic Superfoods You Should Know</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {AYURVEDIC_FOODS.map((food) => (
-              <Card key={food.name} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 glass-effect border-primary/10">
-                <CardHeader className="pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">{food.emoji}</span>
-                    <CardTitle className="text-base">{food.name}</CardTitle>
-                  </div>
-                  <Badge variant="outline" className="w-fit text-xs">{food.dosha} Doshas</Badge>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{food.benefit}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Foods by Dosha */}
-        <div>
-          <h2 className="text-xl font-semibold mb-4">🔥 Foods For Your Dosha</h2>
-          <div className="grid md:grid-cols-3 gap-4">
-            {FOODS_BY_DOSHA.map((item) => (
-              <Card key={item.dosha} className="overflow-hidden">
-                <div className={`h-2 bg-gradient-to-r ${item.bgColor}`} />
-                <CardHeader className="pb-2">
-                  <div className="flex items-center gap-2">
-                    <item.icon className={`h-5 w-5 ${item.color}`} />
-                    <CardTitle className={`text-lg ${item.color}`}>{item.dosha}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-green-600 mb-1">✅ Favor</p>
-                    <ul className="text-sm text-muted-foreground space-y-0.5">
-                      {item.favor.map((f, i) => <li key={i}>• {f}</li>)}
-                    </ul>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-red-500 mb-1">❌ Avoid</p>
-                    <ul className="text-sm text-muted-foreground space-y-0.5">
-                      {item.avoid.map((a, i) => <li key={i}>• {a}</li>)}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Ayurvedic Diet Principles */}
-        <Card className="glass-effect border-primary/20">
-          <CardHeader>
-            <CardTitle>📖 6 Golden Rules of Ayurvedic Eating</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-3">
-              {[
-                { title: "Eat your largest meal at noon", desc: "When the sun is highest, your digestive fire (Agni) is strongest" },
-                { title: "Include all 6 tastes", desc: "Sweet, sour, salty, bitter, pungent, and astringent in every meal" },
-                { title: "Drink warm water", desc: "Sip warm or room-temperature water throughout the day" },
-                { title: "Eat mindfully", desc: "No screens or distractions — chew thoroughly and eat slowly" },
-                { title: "Wait 3 hours between meals", desc: "Allow your previous meal to fully digest before eating again" },
-                { title: "Eat seasonal foods", desc: "Nature provides exactly what your body needs each season" },
-              ].map((rule, i) => (
-                <div key={i} className="p-3 rounded-lg border hover:shadow-sm transition-shadow">
-                  <p className="font-medium text-sm">{rule.title}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{rule.desc}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-        <RemAide context="diet" />
-      </div>
-    );
-  }
-
-  const mealTimes = [
-    { icon: Coffee, label: 'Breakfast', key: 'breakfast' },
-    { icon: Utensils, label: 'Lunch', key: 'lunch' },
-    { icon: Apple, label: 'Snacks', key: 'snacks' },
-    { icon: Utensils, label: 'Dinner', key: 'dinner' },
-  ];
+  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
+  const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } };
 
   return (
-    <div className="space-y-6">
-      <Card className="relative overflow-hidden glass-effect border-primary/20">
-        <div className="absolute inset-0 gradient-bg" />
-        <div className="absolute inset-0 opacity-10">
-          <img 
-            src="https://miaoda-site-img.s3cdn.medo.dev/images/KLing_d4f1d9c7-acfa-4504-b7f1-514307bf6c6e.jpg" 
-            alt="Healthy Ayurvedic food background"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="absolute inset-0 pattern-dots opacity-20" />
-        <CardHeader className="relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center shadow-lg">
-              <Leaf className="h-6 w-6 text-primary" />
+    <motion.div initial="hidden" animate="visible" variants={containerVariants} className="max-w-6xl mx-auto py-12 px-6 space-y-12">
+      
+      {/* Header */}
+      <motion.div variants={itemVariants} className="vedic-card p-10 md:p-14 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl -mr-40 -mt-40" />
+        <div className="relative z-10">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-14 w-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center animate-lotus">
+              <Utensils className="h-7 w-7 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-2xl">{dietPlan.title}</CardTitle>
-              <CardDescription className="text-base">
-                {dietPlan.description || 'Personalized for your dosha balance'}
-              </CardDescription>
+              <h1 className="text-4xl font-bold font-serif italic text-primary">Anna Vigyan</h1>
+              <p className="text-muted-foreground text-sm uppercase tracking-widest font-bold">The Science of Nutrition</p>
             </div>
           </div>
-        </CardHeader>
-        {dietPlan.primary_dosha && (
-          <CardContent className="relative z-10">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Optimized for:</span>
-              <Badge variant="secondary" className="capitalize shadow-sm">
-                {dietPlan.primary_dosha} Dosha
-              </Badge>
-            </div>
-          </CardContent>
-        )}
-      </Card>
+          <p className="text-lg text-muted-foreground max-w-2xl italic leading-relaxed">
+            "Your food is your medicine." Discover the perfect nutritional balance for your unique constitution.
+          </p>
+        </div>
+      </motion.div>
 
-      <Card className="glass-effect border-primary/20">
-        <CardHeader>
-          <CardTitle>Daily Meal Plan</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {mealTimes.map((meal) => {
-            const mealData = dietPlan.daily_menu?.[meal.key];
-            if (!mealData) return null;
+      {!dietPlan ? (
+        <>
+          <motion.div variants={itemVariants} className="vedic-card p-12 text-center border-accent/20">
+             <Sparkles className="h-12 w-12 text-accent mx-auto mb-6" />
+             <h2 className="text-3xl font-bold mb-4 font-serif">Awaiting Your Analysis</h2>
+             <p className="text-muted-foreground mb-10 max-w-lg mx-auto italic">Complete your Nadi Pariksha assessment to receive a personalized Ayurvedic diet plan tailored to your dosha.</p>
+             <Link to="/assessment">
+                <button className="btn-vedic px-10 py-4 rounded-full flex items-center gap-3 mx-auto text-lg">
+                  Begin Assessment <ArrowRight className="h-6 w-6" />
+                </button>
+             </Link>
+          </motion.div>
 
-            return (
-              <div key={meal.key} className="border rounded-lg p-4 glass-effect hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="h-10 w-10 rounded-lg gradient-bg flex items-center justify-center shadow-sm">
-                    <meal.icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold">{meal.label}</h3>
-                </div>
-                <p className="text-muted-foreground">{mealData}</p>
-              </div>
-            );
-          })}
-        </CardContent>
-      </Card>
-
-      {dietPlan.food_restrictions && dietPlan.food_restrictions.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Foods to Avoid</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {dietPlan.food_restrictions.map((food, index) => (
-                <Badge key={index} variant="destructive">
-                  {food}
-                </Badge>
+          <motion.div variants={itemVariants} className="space-y-8">
+            <h2 className="text-2xl font-bold font-serif italic border-l-4 border-primary pl-4">Ayurvedic Superfoods</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {AYURVEDIC_FOODS.map((food, i) => (
+                <motion.div key={i} whileHover={{ y: -5 }} className="vedic-card p-6 border-white/5 bg-white/[0.02]">
+                  <div className="text-4xl mb-4">{food.emoji}</div>
+                  <h3 className="font-bold text-lg mb-2 text-primary">{food.name}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{food.benefit}</p>
+                </motion.div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="space-y-8">
+             <h2 className="text-2xl font-bold font-serif italic border-l-4 border-primary pl-4">Constitution Specifics</h2>
+             <div className="grid md:grid-cols-3 gap-6">
+               {FOODS_BY_DOSHA.map((item, i) => (
+                 <div key={i} className="vedic-card p-8 border-white/5">
+                    <div className="flex items-center gap-3 mb-6">
+                       <item.icon className="h-6 w-6" style={{ color: item.color }} />
+                       <h3 className="text-xl font-bold font-serif" style={{ color: item.color }}>{item.dosha}</h3>
+                    </div>
+                    <div className="space-y-6">
+                       <div>
+                          <p className="text-[10px] uppercase tracking-widest font-black text-primary/60 mb-2">Favor</p>
+                          <ul className="text-xs space-y-1.5 text-muted-foreground">
+                             {item.favor.map((f, j) => <li key={j} className="flex gap-2"><span>•</span> {f}</li>)}
+                          </ul>
+                       </div>
+                       <div>
+                          <p className="text-[10px] uppercase tracking-widest font-black text-rose-500/60 mb-2">Avoid</p>
+                          <ul className="text-xs space-y-1.5 text-muted-foreground">
+                             {item.avoid.map((a, j) => <li key={j} className="flex gap-2"><span>•</span> {a}</li>)}
+                          </ul>
+                       </div>
+                    </div>
+                 </div>
+               ))}
+             </div>
+          </motion.div>
+        </>
+      ) : (
+        <>
+          <motion.div variants={itemVariants} className="grid lg:grid-cols-3 gap-8">
+             <div className="lg:col-span-2 space-y-8">
+                <h2 className="text-2xl font-bold font-serif italic border-l-4 border-primary pl-4">Daily Menu</h2>
+                <div className="space-y-4">
+                   {[
+                     { label: 'Pratah (Breakfast)', key: 'breakfast', icon: Coffee },
+                     { label: 'Madhyanha (Lunch)', key: 'lunch', icon: Utensils },
+                     { label: 'Snacks', key: 'snacks', icon: Apple },
+                     { label: 'Sayam (Dinner)', key: 'dinner', icon: Utensils },
+                   ].map((meal, i) => {
+                     const data = dietPlan.daily_menu?.[meal.key as keyof typeof dietPlan.daily_menu];
+                     if (!data) return null;
+                     return (
+                        <div key={i} className="vedic-card p-6 flex gap-6 items-start hover:border-primary/40 transition-colors">
+                           <div className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                              <meal.icon className="h-6 w-6 text-primary" />
+                           </div>
+                           <div>
+                              <h4 className="font-bold text-lg mb-2">{meal.label}</h4>
+                              <p className="text-muted-foreground leading-relaxed">{String(data)}</p>
+                           </div>
+                        </div>
+                     );
+                   })}
+                </div>
+             </div>
+
+             <div className="space-y-8">
+                <h2 className="text-2xl font-bold font-serif italic border-l-4 border-primary pl-4">Insights</h2>
+                <div className="vedic-card p-8 border-primary/20 bg-primary/5">
+                   <h3 className="font-bold mb-4 text-primary">Seasonal Guidance</h3>
+                   <div className="space-y-4">
+                      {Object.entries(dietPlan.seasonal_recommendations || {}).map(([s, r]) => (
+                         <div key={s} className="space-y-1">
+                            <p className="text-xs uppercase tracking-widest font-black text-primary/40">{s}</p>
+                            <p className="text-sm italic">{String(r)}</p>
+                         </div>
+                      ))}
+                   </div>
+                </div>
+
+                {dietPlan.food_restrictions && (
+                   <div className="vedic-card p-8 border-rose-500/20 bg-rose-500/5">
+                      <h3 className="font-bold mb-4 text-rose-500">Pratishedha (Restrictions)</h3>
+                      <div className="flex flex-wrap gap-2">
+                         {dietPlan.food_restrictions.map((r, i) => (
+                           <span key={i} className="px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-[10px] font-bold text-rose-500 uppercase">{r}</span>
+                         ))}
+                      </div>
+                   </div>
+                )}
+             </div>
+          </motion.div>
+        </>
       )}
 
-      {dietPlan.seasonal_recommendations && Object.keys(dietPlan.seasonal_recommendations).length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Seasonal Recommendations</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {Object.entries(dietPlan.seasonal_recommendations).map(([season, recommendation]) => (
-              <div key={season} className="border-l-4 border-primary pl-4">
-                <h4 className="font-semibold capitalize mb-1">{season}</h4>
-                <p className="text-sm text-muted-foreground">{recommendation as string}</p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+      {/* Rules Section */}
+      <motion.div variants={itemVariants} className="vedic-card p-10 md:p-14 border-primary/10">
+        <h2 className="text-3xl font-bold mb-10 font-serif text-center">Golden Rules of Ayurvedic Eating</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            { title: "Solar Digestion", desc: "Eat your largest meal at noon when Agni is strongest." },
+            { title: "Six Tastes", desc: "Include sweet, sour, salty, bitter, pungent, and astringent daily." },
+            { title: "Warmth Over Cold", desc: "Always prefer warm or room-temperature water and food." },
+            { title: "Mindful Silence", desc: "Eat without screens — nourish your mind as much as your body." },
+            { title: "The Three Hour Gap", desc: "Allow your prev meal to digest fully before eating again." },
+            { title: "Seasonal Harmony", desc: "Eat what nature provides in your current climate." },
+          ].map((rule, i) => (
+            <div key={i} className="space-y-2">
+              <h4 className="font-bold text-primary font-serif italic text-lg">{rule.title}</h4>
+              <p className="text-sm text-muted-foreground leading-relaxed">{rule.desc}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
       <RemAide context="diet" />
-    </div>
+    </motion.div>
   );
 }

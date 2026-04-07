@@ -46,6 +46,15 @@
       "is_doctor": false,
       "role": "user",
       "created_at": "2026-03-19T06:06:42.958Z"
+    },
+    {
+      "id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "email": "test2@test.com",
+      "phone": "",
+      "full_name": "Test User Two",
+      "is_doctor": false,
+      "role": "user",
+      "created_at": "2026-04-04T05:21:23.107Z"
     }
   ],
   "doctors": [],
@@ -80,6 +89,11 @@
       "id": "70a50f05-390a-431c-838c-afa316cf6c25",
       "user_id": "eaf4b41a-1d87-491e-a6da-a3a298eb2003",
       "created_at": "2026-03-19T06:06:42.958Z"
+    },
+    {
+      "id": "e51189bf-d49d-4e0e-b491-fc70ecf48fdd",
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "created_at": "2026-04-04T05:21:23.107Z"
     }
   ],
   "appointments": [],
@@ -189,6 +203,55 @@
       "id": "10669ade-7fb8-4def-b275-0497b1c78b1f",
       "created_at": "2026-03-19T06:22:24.611Z",
       "response": "🙏 **Namaste! I'm your Ayurvedic AI Health Assistant.**\n\nI can answer questions about:\n\n🫁 **Doshas** — Vata, Pitta, Kapha\n🍽️ **Diet & Nutrition** — food for your type\n🌿 **Herbs & Remedies** — natural treatments\n🧘 **Yoga & Pranayama** — dosha-specific practices\n💊 **Health Conditions** — BP, diabetes, joints, skin, hair, digestion, sleep, stress, immunity, liver, kidneys, eyes, memory, hormones\n🌅 **Daily Routine** — Dinacharya & seasonal tips\n🔥 **Detox & Fasting** — Panchakarma, Triphala\n\nJust type your question or symptom and I'll help!"
+    },
+    {
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "message": "hi",
+      "id": "07c46655-e453-4e7e-874c-8e1e334f5f9b",
+      "created_at": "2026-03-29T06:46:05.174Z",
+      "response": "🙏 **Namaste! I'm your Ayurvedic AI Health Assistant.**\n\nI can answer questions about:\n\n🫁 **Doshas** — Vata, Pitta, Kapha\n🍽️ **Diet & Nutrition** — food for your type\n🌿 **Herbs & Remedies** — natural treatments\n🧘 **Yoga & Pranayama** — dosha-specific practices\n💊 **Health Conditions** — BP, diabetes, joints, skin, hair, digestion, sleep, stress, immunity, liver, kidneys, eyes, memory, hormones\n🌅 **Daily Routine** — Dinacharya & seasonal tips\n🔥 **Detox & Fasting** — Panchakarma, Triphala\n\nJust type your question or symptom and I'll help!"
+    },
+    {
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "message": "hello",
+      "id": "bd08bc9d-a101-44a2-9cfc-791941190dcd",
+      "created_at": "2026-03-29T06:46:19.809Z",
+      "response": "🙏 **Namaste! I'm your Ayurvedic AI Health Assistant.**\n\nI can answer questions about:\n\n🫁 **Doshas** — Vata, Pitta, Kapha\n🍽️ **Diet & Nutrition** — food for your type\n🌿 **Herbs & Remedies** — natural treatments\n🧘 **Yoga & Pranayama** — dosha-specific practices\n💊 **Health Conditions** — BP, diabetes, joints, skin, hair, digestion, sleep, stress, immunity, liver, kidneys, eyes, memory, hormones\n🌅 **Daily Routine** — Dinacharya & seasonal tips\n🔥 **Detox & Fasting** — Panchakarma, Triphala\n\nJust type your question or symptom and I'll help!"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "message": "I have a sudden cold and cough",
+      "id": "9f90f3e2-68d1-44b8-810c-386077f1e44c",
+      "created_at": "2026-04-04T06:18:24.216Z",
+      "response": "🌡️ **Ayurvedic Cold, Cough & Fever Remedies:**\n\n• **Tulsi (Holy Basil) tea** — 5-6 leaves + ginger + black pepper + honey\n• **Giloy (Guduchi)** — boosts immunity, reduces fever fast\n• **Sitopaladi churna** — classical formula for cold/cough\n• **Steam inhalation** with eucalyptus oil or ajwain (carom seeds)\n• Warm water with honey + ginger juice every 2 hours\n• **Sesame oil Nasya** — 2 drops in each nostril prevents infections\n• Rest, fasting (light khichdi only), warmth\n• Avoid cold foods, dairy, sweets during illness"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "message": "I have a sore throat",
+      "id": "ddf97076-3dc6-4354-b3a5-90ebe4402c5c",
+      "created_at": "2026-04-04T06:43:34.810Z",
+      "response": "🌡️ **Ayurvedic Cold, Cough & Fever Remedies:**\n\n• **Tulsi (Holy Basil) tea** — 5-6 leaves + ginger + black pepper + honey\n• **Giloy (Guduchi)** — boosts immunity, reduces fever fast\n• **Sitopaladi churna** — classical formula for cold/cough\n• **Steam inhalation** with eucalyptus oil or ajwain (carom seeds)\n• Warm water with honey + ginger juice every 2 hours\n• **Sesame oil Nasya** — 2 drops in each nostril prevents infections\n• Rest, fasting (light khichdi only), warmth\n• Avoid cold foods, dairy, sweets during illness"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "message": "i have fever",
+      "id": "60ff8183-bd37-4c33-b165-1a615553e708",
+      "created_at": "2026-04-04T07:12:51.303Z",
+      "response": "🌡️ **Ayurvedic Cold, Cough & Fever Remedies:**\n\n• **Tulsi (Holy Basil) tea** — 5-6 leaves + ginger + black pepper + honey\n• **Giloy (Guduchi)** — boosts immunity, reduces fever fast\n• **Sitopaladi churna** — classical formula for cold/cough\n• **Steam inhalation** with eucalyptus oil or ajwain (carom seeds)\n• Warm water with honey + ginger juice every 2 hours\n• **Sesame oil Nasya** — 2 drops in each nostril prevents infections\n• Rest, fasting (light khichdi only), warmth\n• Avoid cold foods, dairy, sweets during illness"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "message": "i have cought",
+      "id": "4ec4f48e-b2dd-42e1-8fc2-da4a9d2991dd",
+      "created_at": "2026-04-04T07:13:05.593Z",
+      "response": "🌡️ **Ayurvedic Cold, Cough & Fever Remedies:**\n\n• **Tulsi (Holy Basil) tea** — 5-6 leaves + ginger + black pepper + honey\n• **Giloy (Guduchi)** — boosts immunity, reduces fever fast\n• **Sitopaladi churna** — classical formula for cold/cough\n• **Steam inhalation** with eucalyptus oil or ajwain (carom seeds)\n• Warm water with honey + ginger juice every 2 hours\n• **Sesame oil Nasya** — 2 drops in each nostril prevents infections\n• Rest, fasting (light khichdi only), warmth\n• Avoid cold foods, dairy, sweets during illness"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "message": "ancity",
+      "id": "1f822d3c-ccdc-4d0e-9ded-78a5d45cd90d",
+      "created_at": "2026-04-04T07:13:40.865Z",
+      "response": "🌿 I can help you with Doshas, Diet, Yoga, Herbs, Digestion, Sleep, and Stress management. Try asking about any of these topics!"
     }
   ],
   "auth_users": [
@@ -232,6 +295,13 @@
       "phone": "",
       "password_hash": "$2b$10$cWnCwpcF3mf0TLKYwpIp4.edKDvFjlhAajBuSDeIuF3.sM2qLP2be",
       "created_at": "2026-03-19T06:06:42.958Z"
+    },
+    {
+      "id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "email": "test2@test.com",
+      "phone": "",
+      "password_hash": "$2b$10$VrekCNpHMwMwzFsYq7TQuuk7pKljK91hb7Yko0knwNRLtvAFJJfhy",
+      "created_at": "2026-04-04T05:21:23.107Z"
     }
   ],
   "assessments": [
@@ -460,11 +530,217 @@
       "status": "completed",
       "id": "f3a3428e-0675-46f5-8bb7-27162f8bb286",
       "created_at": "2026-03-19T06:14:09.144Z"
+    },
+    {
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "symptoms": [
+        "Dry skin",
+        "Heartburn"
+      ],
+      "daily_habits": {
+        "digestion": "irregular",
+        "sleep": "light",
+        "energy": "variable",
+        "stress": "moderate"
+      },
+      "physical_attributes": {
+        "skin": "",
+        "body_type": "thin",
+        "appetite": "variable"
+      },
+      "mental_patterns": {
+        "stress_level": "moderate"
+      },
+      "dosha_results": {
+        "primary": "vata",
+        "secondary": "pitta",
+        "severity": "high"
+      },
+      "primary_dosha": "vata",
+      "secondary_dosha": "pitta",
+      "imbalance_severity": "high",
+      "status": "completed",
+      "id": "5156fb12-9e89-4f6c-bfc0-c0a49324f260",
+      "created_at": "2026-04-04T05:08:33.086Z"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "symptoms": [
+        "Dry skin",
+        "Anxiety"
+      ],
+      "daily_habits": {
+        "digestion": "irregular",
+        "sleep": "moderate",
+        "energy": "variable",
+        "stress": "low"
+      },
+      "physical_attributes": {
+        "skin": "",
+        "body_type": "thin",
+        "appetite": "variable"
+      },
+      "mental_patterns": {
+        "stress_level": "low"
+      },
+      "dosha_results": {
+        "primary": "vata",
+        "secondary": "pitta",
+        "severity": "high"
+      },
+      "primary_dosha": "vata",
+      "secondary_dosha": "pitta",
+      "imbalance_severity": "high",
+      "status": "completed",
+      "id": "96da228a-4813-4ad0-8b22-e213fbc42200",
+      "created_at": "2026-04-04T06:05:43.187Z"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "symptoms": [
+        "Dry skin",
+        "Insomnia",
+        "Skin rashes"
+      ],
+      "daily_habits": {
+        "digestion": "irregular",
+        "sleep": "light",
+        "energy": "variable",
+        "stress": "low"
+      },
+      "physical_attributes": {
+        "skin": "",
+        "body_type": "thin",
+        "appetite": "variable"
+      },
+      "mental_patterns": {
+        "stress_level": "low"
+      },
+      "dosha_results": {
+        "primary": "vata",
+        "secondary": "pitta",
+        "severity": "high"
+      },
+      "primary_dosha": "vata",
+      "secondary_dosha": "pitta",
+      "imbalance_severity": "high",
+      "status": "completed",
+      "id": "be6a4e03-f0fb-48cf-a4fa-a37e9734fa93",
+      "created_at": "2026-04-04T07:11:54.144Z"
     }
   ],
   "diet_plans": [],
   "exercise_plans": [],
-  "habit_tracking": [],
+  "habit_tracking": [
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "habit_type": "assignment",
+      "habit_name": "Daily 10 min Nadi Shodhana at dawn",
+      "notes": "From Remedy: Anxiety & Overthinking",
+      "completed_at": "",
+      "id": "cdd48905-8bb2-488a-9f25-fe974bf5a57d",
+      "created_at": "2026-04-04T05:37:06.624Z"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "habit_type": "assignment",
+      "habit_name": "Warm sesame oil foot massage before bed",
+      "notes": "From Remedy: Anxiety & Overthinking",
+      "completed_at": "",
+      "id": "d5e3a108-20de-48d9-bf7b-ce9a7d805f59",
+      "created_at": "2026-04-04T05:37:06.651Z"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "habit_type": "assignment",
+      "habit_name": "Eat lunch at exactly 1:00 PM every day",
+      "notes": "From Remedy: Anxiety & Overthinking",
+      "completed_at": "",
+      "id": "92b63a5e-55f8-4460-a78d-b10930319002",
+      "created_at": "2026-04-04T05:37:06.657Z"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "habit_type": "assignment",
+      "habit_name": "Sip warm ginger water throughout the day",
+      "notes": "From Remedy: Indigestion & Bloating",
+      "completed_at": "",
+      "id": "353e499e-12a6-46bc-8b5c-e38931814aec",
+      "created_at": "2026-04-04T06:42:03.157Z"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "habit_type": "assignment",
+      "habit_name": "Vajrasana pose for 5 mins after dinner",
+      "notes": "From Remedy: Indigestion & Bloating",
+      "completed_at": "",
+      "id": "d92ed997-bc52-4ec1-84fd-62d347367ca6",
+      "created_at": "2026-04-04T06:42:03.336Z"
+    },
+    {
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "habit_type": "assignment",
+      "habit_name": "No cold drinks with meals",
+      "notes": "From Remedy: Indigestion & Bloating",
+      "completed_at": "",
+      "id": "af901b7f-2b55-4ade-a086-34483cb40e73",
+      "created_at": "2026-04-04T06:42:03.392Z"
+    },
+    {
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "habit_type": "assignment",
+      "habit_name": "Daily 10 min Nadi Shodhana at dawn",
+      "notes": "From Remedy: Anxiety & Overthinking",
+      "completed_at": "",
+      "id": "5827bf85-5de6-4b31-9796-252d60d9189d",
+      "created_at": "2026-04-04T06:52:29.222Z"
+    },
+    {
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "habit_type": "assignment",
+      "habit_name": "Warm sesame oil foot massage before bed",
+      "notes": "From Remedy: Anxiety & Overthinking",
+      "completed_at": "",
+      "id": "ea40ef9a-3ff6-494f-becb-f5ae49fab2d2",
+      "created_at": "2026-04-04T06:52:29.296Z"
+    },
+    {
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "habit_type": "assignment",
+      "habit_name": "Eat lunch at exactly 1:00 PM every day",
+      "notes": "From Remedy: Anxiety & Overthinking",
+      "completed_at": "",
+      "id": "0e247c7b-9799-4f94-bb53-cb2e2e9c2ca6",
+      "created_at": "2026-04-04T06:52:29.339Z"
+    },
+    {
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "habit_type": "assignment",
+      "habit_name": "Sip warm ginger water throughout the day",
+      "notes": "From Remedy: Indigestion & Bloating",
+      "completed_at": "",
+      "id": "97b5f5e6-eaf9-45a3-9f2b-cc25478130a9",
+      "created_at": "2026-04-04T07:10:06.702Z"
+    },
+    {
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "habit_type": "assignment",
+      "habit_name": "Vajrasana pose for 5 mins after dinner",
+      "notes": "From Remedy: Indigestion & Bloating",
+      "completed_at": "",
+      "id": "d3143b43-8a9d-4190-9196-ffa56fb14484",
+      "created_at": "2026-04-04T07:10:06.844Z"
+    },
+    {
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "habit_type": "assignment",
+      "habit_name": "No cold drinks with meals",
+      "notes": "From Remedy: Indigestion & Bloating",
+      "completed_at": "",
+      "id": "4153fe52-ddc8-43f8-a495-9222e8aa08ff",
+      "created_at": "2026-04-04T07:10:06.905Z"
+    }
+  ],
   "prescriptions": [],
   "login_logs": [
     {
@@ -785,6 +1061,204 @@
       "ip_address": "127.0.0.1",
       "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0",
       "timestamp": "2026-03-19T06:22:15.745Z"
+    },
+    {
+      "id": "18a4d026-93a9-4a80-8f15-a79625d5b068",
+      "user_id": "eaf4b41a-1d87-491e-a6da-a3a298eb2003",
+      "email": "tester123@example.com",
+      "phone": null,
+      "action": "login",
+      "status": "failed_wrong_password",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-03-29T06:13:03.120Z"
+    },
+    {
+      "id": "3b60fcb0-b2a3-4259-b00b-c14fbf9c303a",
+      "user_id": "eaf4b41a-1d87-491e-a6da-a3a298eb2003",
+      "email": "tester123@example.com",
+      "phone": null,
+      "action": "login",
+      "status": "failed_wrong_password",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-03-29T06:13:48.983Z"
+    },
+    {
+      "id": "8c10c10d-e6db-4c77-ac3c-ac91d0bd4e00",
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "email": "nehalkusumbe244@gmail.com",
+      "phone": null,
+      "action": "login",
+      "status": "failed_wrong_password",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-03-29T06:14:47.045Z"
+    },
+    {
+      "id": "93096560-06fe-41fa-9b62-454d93813380",
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "email": "nehalkusumbe244@gmail.com",
+      "phone": null,
+      "action": "login",
+      "status": "failed_wrong_password",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-03-29T06:14:57.443Z"
+    },
+    {
+      "id": "a04b4467-261a-4597-b95f-69b021cb35eb",
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "email": "nehalkusumbe244@gmail.com",
+      "phone": null,
+      "action": "login",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-03-29T06:15:02.823Z"
+    },
+    {
+      "id": "0235883b-ee40-4d13-ad99-c3a9333777b9",
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "email": "nehalkusumbe244@gmail.com",
+      "phone": null,
+      "action": "login",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-03-29T06:31:19.717Z"
+    },
+    {
+      "id": "0063f602-f8e2-4664-a919-9e57feae5662",
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "email": "nehalkusumbe244@gmail.com",
+      "phone": null,
+      "action": "login",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0",
+      "timestamp": "2026-03-29T06:45:46.202Z"
+    },
+    {
+      "id": "a8aa1de6-f37a-47a8-ab80-80ff89b3b346",
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "email": "nehalkusumbe244@gmail.com",
+      "phone": null,
+      "action": "login",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0",
+      "timestamp": "2026-04-04T05:07:18.136Z"
+    },
+    {
+      "id": "fed40c30-0a5c-4226-8dd6-dff25e656fda",
+      "user_id": null,
+      "email": "test@tes",
+      "phone": null,
+      "action": "login",
+      "status": "failed_not_found",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-04-04T05:13:15.889Z"
+    },
+    {
+      "id": "1308b9e7-70e0-42a6-8e6e-2f899808985b",
+      "user_id": null,
+      "email": "test@tes",
+      "phone": null,
+      "action": "login",
+      "status": "failed_not_found",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-04-04T05:14:02.242Z"
+    },
+    {
+      "id": "85b2aab9-c641-4910-ab89-80d3a2207d79",
+      "user_id": "4e019e9d-618b-4745-88e7-921dc3ce3918",
+      "email": "test@test.com",
+      "phone": null,
+      "action": "login",
+      "status": "failed_wrong_password",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-04-04T05:17:13.498Z"
+    },
+    {
+      "id": "6f0cc20b-e6ce-4244-a06b-c2077f327314",
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "email": "test2@test.com",
+      "phone": null,
+      "action": "signup",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-04-04T05:21:23.107Z"
+    },
+    {
+      "id": "e33eda55-4a4f-42db-a77b-a149f01fb864",
+      "user_id": "0f148442-6812-42c6-954c-b4459ac88472",
+      "email": "test2@test.com",
+      "phone": null,
+      "action": "login",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+      "timestamp": "2026-04-04T05:23:53.780Z"
+    },
+    {
+      "id": "48d7d421-ea64-4d71-97f8-673e3dea7312",
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "email": "nehalkusumbe244@gmail.com",
+      "phone": null,
+      "action": "login",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0",
+      "timestamp": "2026-04-04T06:50:18.194Z"
+    },
+    {
+      "id": "8c9a0aa5-59e2-49d8-abb9-b99e530f8b28",
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "email": "nehalkusumbe244@gmail.com",
+      "phone": null,
+      "action": "login",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0",
+      "timestamp": "2026-04-04T07:32:33.093Z"
+    },
+    {
+      "id": "444ddbf4-033d-4bb3-a7e2-3ada4c679856",
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "email": "nehalkusumbe244@gmail.com",
+      "phone": null,
+      "action": "login",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0",
+      "timestamp": "2026-04-04T07:38:08.952Z"
+    },
+    {
+      "id": "d5835e4a-2b0d-45a9-8741-ed3e5297dc25",
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "email": "nehalkusumbe244@gmail.com",
+      "phone": null,
+      "action": "login",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0",
+      "timestamp": "2026-04-07T15:49:49.255Z"
+    }
+  ],
+  "feedback": [
+    {
+      "user_id": "a5a2d247-f9bc-48c6-bca3-dd4aa561f427",
+      "user_name": "Seeker",
+      "rating": 5,
+      "comment": "really helpful , thanks a lot..",
+      "helpful_count": 0,
+      "created_at": "2026-04-04T07:33:32.506Z",
+      "id": "d73e2bd0-a33b-4a19-92d4-82bc6cffd21e"
     }
   ]
 }

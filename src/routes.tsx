@@ -9,6 +9,8 @@ import AssessmentPage from './pages/AssessmentPage';
 import DietPage from './pages/DietPage';
 import ExercisePage from './pages/ExercisePage';
 import ChatPage from './pages/ChatPage';
+import RemedyPage from './pages/RemedyPage';
+import HerbLibraryPage from './pages/HerbLibraryPage';
 import DoctorDashboardPage from './pages/doctor/DoctorDashboardPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminDoctorsPage from './pages/admin/AdminDoctorsPage';
@@ -65,6 +67,16 @@ const routes: RouteConfig[] = [
     name: 'Exercise',
     path: '/exercise',
     element: <ExercisePage />,
+  },
+  {
+    name: 'Remedies',
+    path: '/remedies',
+    element: <RemedyPage />,
+  },
+  {
+    name: 'Herb Library',
+    path: '/herbs',
+    element: <HerbLibraryPage />,
   },
   {
     name: 'Chat',

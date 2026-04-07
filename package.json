@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:all": "npx concurrently \"vite\" \"node backend.cjs\"",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "start": "node backend.cjs",

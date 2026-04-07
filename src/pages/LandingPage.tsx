@@ -1,200 +1,207 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   Leaf, Activity, BookOpen, Dumbbell, MessageSquare,
   UserCheck, ArrowRight, Sparkles, Wind, Flame, Mountain,
-  CheckCircle, Star, Zap,
+  CheckCircle, Zap,
 } from 'lucide-react';
 
 const FEATURES = [
-  { icon: Activity,      title: 'Dosha Assessment',     color: '#d4853a', border: '#d4853a35', desc: 'Identify your unique Vata–Pitta–Kapha constitution and imbalances through deep AI analysis.' },
-  { icon: BookOpen,      title: 'Personalized Diet',    color: '#c8922f', border: '#c8922f35', desc: 'Custom seasonal meal plans, food lists, and recipes tailored to your dosha and health goals.' },
-  { icon: Dumbbell,      title: 'Daily Dinacharya',     color: '#b87d3a', border: '#b87d3a35', desc: 'Structured daily routines with yoga, pranayama, and Ayurvedic self-care for holistic wellness.' },
-  { icon: MessageSquare, title: 'AI Health Assistant',  color: '#d4853a', border: '#d4853a35', desc: 'Ask about herbs, remedies, symptoms — get Ayurvedic wisdom instantly, 24/7.' },
-  { icon: UserCheck,     title: 'Expert Consultation',  color: '#c89540', border: '#c8954035', desc: 'Connect with verified Ayurvedic doctors for professional guidance and prescriptions.' },
-  { icon: Zap,           title: 'AI Recommendations',   color: '#d4853a', border: '#d4853a35', desc: 'Intelligent health scoring, progress tracking, and adaptive wellness recommendations.' },
+  { icon: Activity,      title: 'Dosha Assessment',     color: 'var(--sage)', desc: 'Identify your unique Vata–Pitta–Kapha constitution and imbalances through deep analysis.' },
+  { icon: BookOpen,      title: 'Personalized Diet',    color: 'var(--saffron)', desc: 'Custom seasonal meal plans, food lists, and recipes tailored to your dosha.' },
+  { icon: Dumbbell,      title: 'Daily Dinacharya',     color: 'var(--sage)', desc: 'Structured daily routines with yoga, pranayama, and Ayurvedic self-care.' },
+  { icon: MessageSquare, title: 'Health Assistant',  color: 'var(--saffron)', desc: 'Ask about herbs, remedies, symptoms — get Ayurvedic wisdom instantly, 24/7.' },
+  { icon: UserCheck,     title: 'Expert Consultation',  color: 'var(--sage)', desc: 'Connect with verified Ayurvedic doctors for professional guidance.' },
+  { icon: Zap,           title: 'Smart Recommendations',   color: 'var(--saffron)', desc: 'Intelligent health scoring, progress tracking, and adaptive wellness.' },
 ];
 
 const DOSHAS = [
-  { name: 'Vata',  icon: Wind,     color: '#6ab4d4', grad: 'from-sky-900/40 to-sky-950/40',    desc: 'Air & Space · Creativity · Movement' },
-  { name: 'Pitta', icon: Flame,    color: '#d47a3a', grad: 'from-orange-900/40 to-orange-950/40', desc: 'Fire & Water · Intelligence · Transform' },
-  { name: 'Kapha', icon: Mountain, color: '#6b8f6e', grad: 'from-green-900/40 to-green-950/40', desc: 'Earth & Water · Stability · Structure' },
-];
-
-const STEPS = [
-  { num: '01', title: 'Complete Assessment',  desc: 'Answer questions about your body, habits, and lifestyle patterns' },
-  { num: '02', title: 'Receive Your Plan',    desc: 'Get custom diet, yoga, and daily routine recommendations' },
-  { num: '03', title: 'Track & Grow',         desc: 'Monitor progress, consult doctors, and deepen your wellness practice' },
-];
-
-const STATS = [
-  { value: '5000+', label: 'Years of Ayurvedic Wisdom' },
-  { value: '3',     label: 'Doshas Analyzed' },
-  { value: '30+',   label: 'Herbal Remedies' },
-  { value: '100%',  label: 'Personalized' },
-];
-
-// Ember particle positions (static — no randomness for SSR safety)
-const EMBERS = [
-  { x: '15%', delay: '0s',   size: 3, tx: -20, ty: -140, d: '5s' },
-  { x: '30%', delay: '1.2s', size: 2, tx: 15,  ty: -100, d: '4s' },
-  { x: '50%', delay: '2.4s', size: 4, tx: -10, ty: -120, d: '6s' },
-  { x: '70%', delay: '0.8s', size: 2, tx: 20,  ty: -90,  d: '4.5s' },
-  { x: '85%', delay: '1.6s', size: 3, tx: -15, ty: -130, d: '5.5s' },
-  { x: '22%', delay: '3.1s', size: 2, tx: 8,   ty: -110, d: '4.2s' },
-  { x: '60%', delay: '0.4s', size: 3, tx: -22, ty: -150, d: '5.8s' },
-  { x: '42%', delay: '2.9s', size: 2, tx: 12,  ty: -95,  d: '3.9s' },
+  { 
+    name: 'Vata',  icon: Wind,     color: '#6ab4d4', 
+    desc: 'Air & Space · Creativity · Movement',
+    video: 'https://player.vimeo.com/external/517090025.sd.mp4?s=6a988d5e05c87a912bb07fef7b194fb84777d1ca&profile_id=164&oauth2_token_id=57447761'
+  },
+  { 
+    name: 'Pitta', icon: Flame,    color: '#d47a3a', 
+    desc: 'Fire & Water · Intelligence · Transform',
+    video: 'https://player.vimeo.com/external/494440465.sd.mp4?s=340f1a9461148f3b6d27464a0f44358899887556&profile_id=164&oauth2_token_id=57447761'
+  },
+  { 
+    name: 'Kapha', icon: Mountain, color: '#6b8f6e', 
+    desc: 'Earth & Water · Stability · Structure',
+    video: 'https://player.vimeo.com/external/517090025.sd.mp4?s=6a988d5e05c87a912bb07fef7b194fb84777d1ca&profile_id=164&oauth2_token_id=57447761'
+  },
 ];
 
 export default function LandingPage() {
   return (
-    <div className="aurora-bg min-h-screen overflow-x-hidden" style={{ color: 'hsl(38 25% 90%)' }}>
-      {/* Animated layers */}
-      <div className="orb orb-1" />
-      <div className="orb orb-2" />
-      <div className="orb orb-3" />
-      <div className="orb orb-4" />
-      <div className="dot-grid" />
-      <div className="scanlines" />
-
-      {/* ── Sticky Nav ── */}
-      <header className="sticky top-0 z-50 w-full content-layer"
-              style={{ background: 'hsl(20 22% 7% / 0.85)', borderBottom: '1px solid hsl(32 25% 16% / 0.8)', backdropFilter: 'blur(20px)' }}>
-        <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4 md:px-8">
-          <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl flex items-center justify-center animate-glow-pulse"
-                 style={{ background: 'hsl(32 50% 20%)', border: '1px solid hsl(32 60% 30% / 0.5)' }}>
-              <Leaf className="h-5 w-5" style={{ color: 'hsl(32 85% 60%)' }} />
-            </div>
-            <span className="text-base font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-              Ayur<span style={{ color: 'hsl(32 85% 58%)' }}>veda</span>
+    <div className="min-h-screen selection:bg-primary/30">
+      {/* ── Nav ── */}
+      <nav className="fixed top-0 z-[100] w-full glass-effect border-b border-primary/20 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto flex h-20 items-center justify-between px-6 md:px-12">
+          <div className="flex items-center gap-3">
+            <motion.div 
+              animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.1, 1] }}
+              transition={{ duration: 6, repeat: Infinity }}
+              className="h-10 w-10 rounded-xl flex items-center justify-center bg-primary/15 border border-primary/30 shadow-[0_0_20px_rgba(34,197,94,0.2)]"
+            >
+              <Leaf className="h-6 w-6 text-primary" />
+            </motion.div>
+            <span className="text-xl font-bold tracking-tight">
+              Vedic<span className="text-primary italic">Life</span>
             </span>
           </div>
-          <div className="flex items-center gap-3">
-            <Link to="/login">
-              <button className="px-4 py-1.5 text-sm font-medium rounded-lg transition-all"
-                      style={{ color: 'hsl(38 20% 68%)' }}
-                      onMouseEnter={e => (e.currentTarget.style.color = 'hsl(38 25% 88%)')}
-                      onMouseLeave={e => (e.currentTarget.style.color = 'hsl(38 20% 68%)')}>
-                Sign In
+          <div className="flex items-center gap-8">
+            <Link to="/login" className="text-sm font-bold uppercase tracking-widest text-foreground/70 hover:text-primary transition-all">
+              Sanctuary Entry
+            </Link>
+            <Link to="/signup">
+              <button className="btn-vedic px-8 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest">
+                Begin Journey
               </button>
             </Link>
-            <Link to="/signup">
-              <button className="btn-amber px-5 py-2 text-sm rounded-xl">Get Started</button>
-            </Link>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* ── Hero ── */}
-      <section className="content-layer relative pt-24 pb-32 px-4 text-center overflow-hidden">
-        {/* Mandala rings */}
-        <div className="absolute top-12 right-16 w-48 h-48 mandala-ring float-animate pointer-events-none" />
-        <div className="absolute top-24 right-24 w-32 h-32 mandala-ring-fast pointer-events-none" />
-        <div className="absolute bottom-16 left-12 w-36 h-36 mandala-ring float-animate pointer-events-none"
-             style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-24 left-20 w-20 h-20 mandala-ring-fast pointer-events-none" />
-
-        {/* Ember particles */}
-        <div className="absolute inset-x-0 bottom-0 h-32 pointer-events-none">
-          {EMBERS.map((e, i) => (
-            <div key={i} className="ember absolute bottom-0"
-                 style={{
-                   left: e.x,
-                   width: e.size, height: e.size,
-                   '--d': e.d, '--tx': `${e.tx}px`, '--ty': `${e.ty}px`,
-                   animationDelay: e.delay,
-                   boxShadow: '0 0 4px hsl(32 85% 55% / 0.8)',
-                 } as React.CSSProperties} />
-          ))}
+      {/* ── Hero Video Upgrade ── */}
+      <section className="relative min-h-screen flex items-center justify-center px-6 text-center overflow-hidden">
+        {/* Full-Bleed Cinematic Background */}
+        <div className="absolute inset-0 z-0">
+           <video 
+             autoPlay muted loop playsInline 
+             className="w-full h-full object-cover scale-105 brightness-[0.4] contrast-[1.1]"
+             poster="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80"
+           >
+             <source src="https://player.vimeo.com/external/517090025.sd.mp4?s=6a988d5e05c87a912bb07fef7b194fb84777d1ca&profile_id=164&oauth2_token_id=57447761" type="video/mp4" />
+           </video>
+           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background" />
+           <div className="absolute inset-0 cinematic-vignette opacity-80" />
         </div>
 
-        <div className="max-w-4xl mx-auto relative">
-          <div className="inline-flex items-center gap-2 badge-amber mb-8">
-            <Sparkles className="h-3.5 w-3.5" />
-            Ancient Wisdom · Modern Intelligence · AI Powered
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-5xl mx-auto relative z-10 pt-20"
+        >
+          <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full glass-effect border border-primary/30 text-[10px] font-black text-primary mb-12 tracking-[0.4em] uppercase shadow-[0_0_30px_rgba(34,197,94,0.15)]">
+            <Sparkles className="h-4 w-4 animate-pulse" />
+            The Future of Ancient Wisdom
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Your Personal{' '}
-            <span className="gradient-text neon-amber-text">Ayurvedic</span>
-            <br />
-            <span style={{ fontFamily: 'Playfair Display, serif', fontStyle: 'italic', color: 'hsl(32 55% 62%)' }}>
-              Health Journey
+          <h1 className="text-7xl md:text-[9.5rem] font-bold mb-10 leading-[0.9] tracking-tighter">
+            Mindful{' '}
+            <span className="relative inline-block align-middle pb-4">
+              <span className="sr-only">Essence</span>
+              <svg className="w-[400px] md:w-[600px] h-[100px] md:h-[200px]" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <clipPath id="textClip">
+                    <text x="50%" y="60%" textAnchor="middle" dominantBaseline="middle" fontSize="160" fontWeight="950" fontStyle="italic" fontFamily="serif" className="tracking-tighter">Essence</text>
+                  </clipPath>
+                </defs>
+                <foreignObject x="0" y="0" width="600" height="200" clipPath="url(#textClip)">
+                   <video autoPlay muted loop playsInline className="w-full h-full object-cover brightness-[1.8] contrast-150 saturate-150 scale-110">
+                      <source src="https://player.vimeo.com/external/494440465.sd.mp4?s=340f1a9461148f3b6d27464a0f44358899887556&profile_id=164&oauth2_token_id=57447761" type="video/mp4" />
+                   </video>
+                </foreignObject>
+                {/* Fallback stroke for premium feel */}
+                <text x="50%" y="60%" textAnchor="middle" dominantBaseline="middle" fontSize="160" fontWeight="950" fontStyle="italic" fontFamily="serif" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" className="tracking-tighter">Essence</text>
+              </svg>
             </span>
+            <br />
+            <span className="text-foreground/90 font-light">In Every Breath</span>
           </h1>
 
-          <p className="text-base md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
-             style={{ color: 'hsl(38 15% 58%)' }}>
-            Discover balance and wellness through personalized Ayurvedic guidance, expert consultations,
-            and AI‑powered health insights rooted in 5,000 years of ancient healing.
+          <p className="text-xl md:text-3xl text-muted-foreground mb-16 max-w-3xl mx-auto leading-relaxed font-medium tracking-tight">
+            An intelligent sanctuary for your soul. Connect with nature's rhythm 
+            through advanced Ayurvedic diagnostics and cinematic daily routines.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Link to="/signup">
-              <button className="btn-amber flex items-center gap-2 px-8 py-3.5 text-base rounded-2xl hover-lift">
-                Begin Your Journey <ArrowRight className="h-5 w-5" />
+          <div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
+            <Link to="/signup" className="group">
+              <button className="btn-vedic flex items-center gap-4 px-12 py-6 text-xl rounded-full shadow-2xl group-hover:scale-105 transition-transform">
+                Awaken Your Spirit <ArrowRight className="h-7 w-7 transition-transform group-hover:translate-x-2" />
               </button>
             </Link>
             <Link to="/doctor-register">
-              <button className="btn-outline-amber flex items-center gap-2 px-8 py-3.5 text-base font-semibold rounded-2xl hover-lift">
-                Join as Doctor
+              <button className="px-12 py-6 text-xl font-bold rounded-full glass-effect border border-white/10 hover:border-primary/40 hover:bg-primary/5 transition-all">
+                Healer's Portal
               </button>
             </Link>
           </div>
+        </motion.div>
 
-          {/* Trust indicators */}
-          <div className="flex items-center justify-center gap-6 flex-wrap">
-            {['5,000+ years of Ayurvedic wisdom', 'AI-powered recommendations', 'Verified Ayurvedic doctors'].map(t => (
-              <div key={t} className="flex items-center gap-1.5 text-xs" style={{ color: 'hsl(38 15% 52%)' }}>
-                <CheckCircle className="h-3.5 w-3.5" style={{ color: 'hsl(32 70% 50%)' }} /> {t}
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Floating holographic scroll indicator */}
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40"
+        >
+          <div className="w-1 h-12 bg-gradient-to-b from-primary to-transparent rounded-full" />
+          <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Scroll to Descend</span>
+        </motion.div>
       </section>
 
-      {/* ── Stats ── */}
-      <section className="content-layer py-12 px-4"
-               style={{ borderTop: '1px solid hsl(32 20% 14%)', borderBottom: '1px solid hsl(32 20% 14%)', background: 'hsl(20 22% 7% / 0.5)' }}>
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {STATS.map(s => (
-            <div key={s.label}>
-              <p className="text-3xl font-bold gradient-text neon-amber-text" style={{ fontFamily: 'Playfair Display, serif' }}>
-                {s.value}
-              </p>
-              <p className="text-xs mt-1" style={{ color: 'hsl(38 15% 52%)' }}>{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Doshas ── */}
-      <section className="content-layer py-20 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 badge-coffee mb-4">🌿 The Three Doshas</div>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-              Understand Your <span className="gradient-text">Constitution</span>
-            </h2>
-            <p className="mt-3 max-w-xl mx-auto text-sm" style={{ color: 'hsl(38 15% 52%)' }}>
-              Every person has a unique blend of the three doshas — the key to lasting wellness.
-            </p>
+      {/* ── Doshas with Video Previews ── */}
+      <section className="py-40 px-6 relative z-10 bg-background/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-28">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+             >
+               <h2 className="text-5xl md:text-7xl font-bold mb-8 tracking-tighter">Primordial <span className="text-primary italic">Forces</span></h2>
+               <div className="h-1.5 w-24 bg-primary/30 mx-auto rounded-full mb-8" />
+               <p className="text-muted-foreground text-xl max-w-2xl mx-auto font-medium">
+                 The universe is written in five elements, expressed through your unique Dosha.
+               </p>
+             </motion.div>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {DOSHAS.map(d => {
+          <div className="grid md:grid-cols-3 gap-12">
+            {DOSHAS.map((d, i) => {
               const Icon = d.icon;
               return (
-                <div key={d.name} className="coffee-card rounded-2xl p-7 text-center shine-effect hover-lift">
-                  <div className="h-16 w-16 rounded-2xl mx-auto mb-4 flex items-center justify-center float-animate"
-                       style={{ background: `${d.color}18`, border: `1.5px solid ${d.color}40` }}>
-                    <Icon className="h-8 w-8" style={{ color: d.color }} />
+                <motion.div 
+                  key={d.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.2 }}
+                  className="video-hover-container perspective-1000 group cursor-pointer"
+                >
+                  <div className="vedic-card h-[500px] p-12 text-center flex flex-col items-center justify-center relative z-20 overflow-hidden group-hover:border-primary/50 transition-colors border-white/5 bg-white/[0.03]">
+                    {/* Background Video Preview */}
+                    <video 
+                      autoPlay muted loop playsInline 
+                      className="absolute inset-0 w-full h-full object-cover -z-10 group-hover:scale-125 transition-transform duration-1000 brightness-110 contrast-125 saturate-150"
+                    >
+                      <source src={d.video} type="video/mp4" />
+                    </video>
+                    
+                    {/* Dark gradient to ensure readability (Refined Opacity) */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/70 to-background/95 z-0 group-hover:from-background/40 group-hover:via-background/10 group-hover:to-background/40 transition-colors duration-700" />
+
+                    {/* Elemental Hover Aura */}
+                    <div 
+                      className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700 blur-[80px]"
+                      style={{ background: d.color }}
+                    />
+
+                    <div className="relative z-10 space-y-8 flex flex-col items-center">
+                      <div className="h-24 w-24 rounded-[2rem] flex items-center justify-center bg-background/50 border border-white/10 group-hover:border-primary/40 group-hover:bg-primary/10 transition-all duration-500 animate-lotus">
+                        <Icon className="h-12 w-12 text-primary group-hover:scale-120 transition-transform" />
+                      </div>
+                      <h3 className="text-4xl font-bold tracking-tight font-serif italic text-primary">{d.name}</h3>
+                      <p className="text-lg text-muted-foreground leading-relaxed font-medium">{d.desc}</p>
+                      
+                      <button className="opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500 px-8 py-3 rounded-full border border-primary/40 bg-primary/10 text-primary font-bold text-sm uppercase tracking-widest">
+                        Explore Energy
+                      </button>
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-bold mb-1" style={{ fontFamily: 'Playfair Display, serif', color: d.color }}>
-                    {d.name}
-                  </h3>
-                  <p className="text-xs tracking-wider mb-3" style={{ color: 'hsl(38 15% 48%)' }}>{d.desc}</p>
-                  <div className="h-0.5 rounded-full w-12 mx-auto" style={{ background: `${d.color}50` }} />
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -202,99 +209,108 @@ export default function LandingPage() {
       </section>
 
       {/* ── Features ── */}
-      <section className="content-layer py-20 px-4"
-               style={{ background: 'hsl(20 22% 7% / 0.4)', borderTop: '1px solid hsl(32 20% 13%)' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 badge-amber mb-4">⚡ Platform Features</div>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-              Comprehensive <span className="gradient-text">Ayurvedic Care</span>
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {FEATURES.map((f, i) => {
-              const Icon = f.icon;
-              return (
-                <div key={i} className="glass-card rounded-2xl p-6 shine-effect">
-                  <div className="h-11 w-11 rounded-xl mb-4 flex items-center justify-center"
-                       style={{ background: `${f.color}18`, border: `1px solid ${f.border}` }}>
-                    <Icon className="h-5 w-5" style={{ color: f.color }} />
-                  </div>
-                  <h3 className="font-bold text-sm mb-2" style={{ fontFamily: 'Outfit, sans-serif' }}>{f.title}</h3>
-                  <p className="text-xs leading-relaxed" style={{ color: 'hsl(38 15% 52%)' }}>{f.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── How It Works ── */}
-      <section className="content-layer py-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 badge-coffee mb-4">🔥 Simple Process</div>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-              How It <span className="gradient-text">Works</span>
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-8 left-[25%] right-[25%] h-px"
-                 style={{ background: 'linear-gradient(90deg, hsl(32 60% 30% / 0.4), hsl(38 70% 40% / 0.4))' }} />
-            {STEPS.map((s, i) => (
-              <div key={i} className="text-center">
-                <div className="h-16 w-16 rounded-2xl mx-auto mb-5 flex items-center justify-center font-bold text-xl neon-amber"
-                     style={{
-                       background: 'linear-gradient(135deg, hsl(32 55% 22%), hsl(25 45% 14%))',
-                       color: 'hsl(32 85% 62%)',
-                       fontFamily: 'Playfair Display, serif',
-                       border: '1px solid hsl(32 50% 30% / 0.5)',
-                     }}>
-                  {s.num}
-                </div>
-                <h3 className="font-bold text-base mb-2" style={{ fontFamily: 'Outfit, sans-serif' }}>{s.title}</h3>
-                <p className="text-sm" style={{ color: 'hsl(38 15% 52%)' }}>{s.desc}</p>
+      <section className="py-40 px-6 bg-white/[0.01] border-y border-border/20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[50%] h-full bg-primary/5 blur-[120px] rounded-full -z-10" />
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-24 items-center">
+            <div className="space-y-12">
+              <h2 className="text-5xl md:text-6xl font-bold leading-[1.1] tracking-tighter">
+                Holistic Systems <br/>For The <span className="text-primary italic">Modern Soul</span>
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-12">
+                {FEATURES.map((f, i) => (
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="space-y-4 group"
+                  >
+                    <div className="h-12 w-12 rounded-2xl flex items-center justify-center bg-primary/10 border border-primary/20 group-hover:bg-primary/20 group-hover:border-primary/40 transition-all">
+                      <f.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <h4 className="font-bold text-2xl tracking-tight">{f.title}</h4>
+                    <p className="text-muted-foreground leading-relaxed font-medium">{f.desc}</p>
+                  </motion.div>
+                ))}
               </div>
-            ))}
+            </div>
+            
+            <div className="relative group perspective-1000">
+              <motion.div
+                whileHover={{ rotateY: 15, rotateX: -5 }}
+                transition={{ type: "spring", stiffness: 100 }}
+                className="relative rounded-[4rem] border border-white/10 overflow-hidden bg-white/5 aspect-[4/5] flex items-center justify-center preserve-3d shadow-2xl"
+              >
+                  {/* Internal Video Snippet */}
+                  <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover grayscale brightness-50 opacity-40">
+                     <source src="https://assets.mixkit.co/videos/preview/mixkit-sunlight-streaming-through-the-leaves-of-a-tree-534-large.mp4" type="video/mp4" />
+                  </video>
+                  
+                  <Leaf className="w-56 h-56 text-primary/30 animate-spin-slow lush-glow relative z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-20" />
+                  <div className="absolute bottom-16 left-12 right-12 text-center z-30">
+                      <p className="font-serif italic text-3xl text-accent/80 drop-shadow-2xl">
+                        "Your body is a temple, <br/>keep it pure and clean."
+                      </p>
+                      <p className="text-xs uppercase tracking-[0.4em] font-bold text-primary/40 mt-6">Ancient Proverb</p>
+                  </div>
+              </motion.div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── CTA ── */}
-      <section className="content-layer py-28 px-4 relative overflow-hidden">
-        {/* Inner glow */}
-        <div className="absolute inset-0 pointer-events-none"
-             style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 50%, hsl(32 40% 16% / 0.4), transparent)' }} />
-        <div className="absolute inset-0 pattern-mandala pointer-events-none opacity-60" />
-        {/* Big mandala rings */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 mandala-ring pointer-events-none opacity-30" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 mandala-ring-fast pointer-events-none opacity-20" />
+      <section className="py-48 px-6 text-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-5xl mx-auto vedic-card p-24 relative overflow-hidden bg-gradient-to-br from-primary/10 to-accent/5 border-primary/20"
+        >
+          <div className="absolute inset-0 z-0 opacity-10">
+             <video autoPlay muted loop playsInline className="w-full h-full object-cover">
+               <source src="https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4" type="video/mp4" />
+             </video>
+          </div>
 
-        <div className="max-w-2xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 badge-amber mb-6">✨ Start Today</div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Ready to Transform<br />
-            <span className="gradient-text neon-amber-text">Your Health?</span>
-          </h2>
-          <p className="mb-8" style={{ color: 'hsl(38 15% 52%)' }}>
-            Join thousands discovering the power of Ayurvedic wellness,<br />guided by ancient wisdom and modern AI.
-          </p>
-          <Link to="/signup">
-            <button className="btn-amber flex items-center gap-2 px-10 py-4 text-base rounded-2xl hover-lift mx-auto">
-              Get Started Free <ArrowRight className="h-5 w-5" />
-            </button>
-          </Link>
-        </div>
+          <div className="relative z-10">
+            <h2 className="text-6xl font-bold mb-10 tracking-tighter">Enter The <span className="text-primary italic">Sanctuary</span></h2>
+            <p className="text-muted-foreground text-xl mb-16 max-w-2xl mx-auto font-medium">
+              Join 10,000+ conscious beings already finding their absolute balance. 
+              The journey to your best self begins with a single, mindful choice.
+            </p>
+            
+            <Link to="/signup" className="group">
+              <button className="btn-vedic px-16 py-7 text-2xl rounded-full shadow-[0_0_50px_rgba(34,197,94,0.3)] group-hover:scale-105 transition-all">
+                Reveal My Assessment
+              </button>
+            </Link>
+          </div>
+        </motion.div>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="content-layer py-8 px-4 text-center text-sm"
-              style={{ background: 'hsl(20 20% 6%)', borderTop: '1px solid hsl(32 20% 13%)', color: 'hsl(38 15% 42%)' }}>
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <Leaf className="h-4 w-4" style={{ color: 'hsl(32 60% 45%)' }} />
-          <span className="font-semibold" style={{ fontFamily: 'Outfit, sans-serif', color: 'hsl(38 25% 68%)' }}>Ayurveda Health Advisor</span>
+      <footer className="py-28 px-6 border-t border-border/20 text-center relative overflow-hidden bg-background/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col items-center gap-6 mb-12">
+             <div className="h-16 w-16 rounded-2xl flex items-center justify-center bg-primary/15 border border-primary/30">
+                <Leaf className="h-8 w-8 text-primary" />
+             </div>
+             <span className="text-3xl font-black tracking-tighter">Vedic<span className="text-primary italic">Life</span></span>
+          </div>
+          <div className="flex gap-12 justify-center text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground mb-16">
+             <a href="#" className="hover:text-primary transition-colors">Sanctuary</a>
+             <a href="#" className="hover:text-primary transition-colors">Elements</a>
+             <a href="#" className="hover:text-primary transition-colors">Healers</a>
+          </div>
+          <p className="text-xs text-muted-foreground/40 italic font-serif opacity-70 mb-4 max-w-md mx-auto">
+            "Absolute wellness is not the absence of disease, but the presence of vibrant life in body, mind, and spirit."
+          </p>
+          <div className="text-[10px] uppercase tracking-[0.5em] text-primary/30 font-bold">© 2026 Crafted with Soul</div>
         </div>
-        <p>© 2026 · Bridging ancient Ayurvedic wisdom with modern technology.</p>
       </footer>
     </div>
   );

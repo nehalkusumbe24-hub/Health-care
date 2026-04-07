@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { toast } from 'sonner';
 import type { Profile } from '@/types';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -80,19 +81,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         data = await res.json();
       } catch (e) {
-        throw new Error(`Server returned non-JSON response from ${API_URL}/auth/login. Status: ${res.status}`);
+        throw new Error(`Server connection failed. Status: ${res.status}`);
       }
 
-      if (!res.ok) throw new Error(data.error || data.message || `Login failed with status ${res.status}`);
+      if (!res.ok) throw new Error(data.error || data.message || `Login failed (Status: ${res.status})`);
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
       getProfile(data.user.id).then(setProfile);
+      toast.success('Welcome back to the Sanctuary! 🙏');
       return { error: null };
     } catch (error) {
       console.error('[Auth] Login error:', error);
-      alert(`Login Error connecting to ${API_URL || '(relative URL)'}/auth/login: ${(error as Error).message}`);
+      toast.error(`Login failed: ${(error as Error).message}`);
       return { error: error as Error };
     }
   };
@@ -110,14 +112,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         data = await res.json();
       } catch (e) {
-        throw new Error(`Server returned non-JSON response from ${API_URL}/auth/signup. Status: ${res.status}`);
+         throw new Error(`Server connection failed. Status: ${res.status}`);
       }
 
-      if (!res.ok) throw new Error(data.error || data.message || `Signup failed with status ${res.status}`);
+      if (!res.ok) throw new Error(data.error || data.message || `Signup failed (Status: ${res.status})`);
+      toast.success('Account created successfully! Please log in.');
       return { error: null };
     } catch (error) {
       console.error('[Auth] Signup error:', error);
-      alert(`Signup Error connecting to ${API_URL || '(relative URL)'}/auth/signup: ${(error as Error).message}`);
+      toast.error(`Signup failed: ${(error as Error).message}`);
       return { error: error as Error };
     }
   };
@@ -135,6 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('user');
     setUser(null);
     setProfile(null);
+    toast.message('You have left the Sanctuary. Come back soon! 🌿');
   };
 
   return (
